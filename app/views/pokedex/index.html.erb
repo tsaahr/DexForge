@@ -1,0 +1,13 @@
+<div class="container py-5">
+  <h1 class="text-center mb-4">Pokédex</h1>
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
+      <% @pokemons.each do |pokemon| %>
+        <div class="col text-center">
+          <%= link_to pokemon_path(pokemon), class: "text-decoration-none text-dark" do %>
+            <img src="<%= pokemon.image_url %>" alt="<%= pokemon.name %>" class="img-fluid" />
+            <h5 class="mt-2 text-capitalize"><%= pokemon.name %></h5>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+</div>

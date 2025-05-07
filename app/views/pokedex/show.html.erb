@@ -1,0 +1,49 @@
+<div class="container py-5">
+  <%= link_to '← Back to Pokédex', root_path, class: "btn btn-secondary mb-4" %>
+
+  <div class="text-center">
+    <h1 class="text-capitalize"><%= @pokemon["name"] %></h1>
+    <img src="<%= @pokemon["sprites"]["front_default"] %>" alt="<%= @pokemon["name"] %>" class="img-fluid mb-3" />
+
+    <p><strong>Height:</strong> <%= @pokemon["height"] %></p>
+    <p><strong>Weight:</strong> <%= @pokemon["weight"] %></p>
+
+    <p><strong>Base Experience:</strong> <%= @pokemon["base_experience"] %></p>
+
+    <p><strong>Types:</strong>
+      <% @pokemon["types"].each do |type| %>
+        <span class="badge bg-primary text-capitalize"><%= type["type"]["name"] %></span>
+      <% end %>
+    </p>
+  </div>
+
+  <div class="mt-4">
+    <h4>Base Stats</h4>
+    <ul class="list-group">
+      <% @pokemon["stats"].each do |stat| %>
+        <li class="list-group-item d-flex justify-content-between align-items-center text-capitalize">
+          <%= stat["stat"]["name"].gsub("-", " ") %>
+          <span class="badge bg-success rounded-pill"><%= stat["base_stat"] %></span>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div class="mt-4">
+    <h4>Sample Moves</h4>
+    <ul>
+      <% @pokemon["moves"].first(5).each do |move| %>
+        <li class="text-capitalize"><%= move["move"]["name"].gsub("-", " ") %></li>
+      <% end %>
+    </ul>
+  </div>
+
+
+  <div class="d-flex justify-content-center gap-3 mt-3">
+    <img src="<%= @pokemon["sprites"]["front_default"] %>" />
+    <img src="<%= @pokemon["sprites"]["back_default"] %>" />
+    <img src="<%= @pokemon["sprites"]["front_shiny"] %>" />
+  </div>
+
+
+</div>

@@ -1,0 +1,45 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  
+  h1 {
+    font-weight: 700;
+    color: #ef5350;
+  }
+  
+  a {
+    transition: all 0.2s ease;
+  }
+  
+  a:hover {
+    transform: scale(1.05);
+  }
+  
+  .badge {
+    font-size: 0.9rem;
+    padding: 0.4em 0.7em;
+  }
+  
+  img {
+    max-height: 120px;
+  }
+  
+  .card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .container {
+    max-width: 1000px;
+  }
+  
+  .btn-secondary {
+    background-color: #757575;
+    border: none;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #616161;
+  }
+  
