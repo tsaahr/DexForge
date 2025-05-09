@@ -5,13 +5,14 @@ class Pokemon < ApplicationRecord
       if response.success?
         data = response.parsed_response
 
-            
+        types = data["types"].map { |t| t["type"]["name"] }
+
         create!(
           name: data["name"],
           image_url: data["sprites"]["front_default"],
-          pokeapi_id: id
-          
-        )
+          pokeapi_id: id,
+          types: data["types"].map { |t| t["type"]["name"] }
+        )        
       end
     end
   end

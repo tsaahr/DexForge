@@ -1,12 +1,37 @@
-<div class="container py-5">
-    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
-      <% @pokemons.each do |pokemon| %>
-        <div class="col text-center">
-          <%= link_to pokemon_path(pokemon), class: "text-decoration-none text-dark" do %>
-            <img src="<%= pokemon.image_url %>" alt="<%= pokemon.name %>" class="img-fluid" />
-            <h5 class="mt-2 text-capitalize"><%= pokemon.name %></h5>
-          <% end %>
+<%= form_with url: root_path, method: :get, local: true do %>
+  <div class="form-group">
+    <%= label_tag :query, "Search by name:" %>
+    <%= text_field_tag :query, params[:query], class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= label_tag :type, "Filter by type:" %>
+    <%= select_tag :type, options_for_select([["All", "all"]] + @types.map { |t| [t.capitalize, t] }, params[:type]), class: "form-control" %>
+  </div>
+
+  <%= submit_tag "Filter", class: "btn btn-primary mt-2" %>
+<% end %>
+
+
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+  <% @pokemons.each do |pokemon| %>
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <div class="d-flex justify-content-center align-items-center" style="height: 150px;">
+          <img src="<%= pokemon.image_url %>" alt="<%= pokemon.name %>" style="max-height: 100%; max-width: 100%;">
         </div>
-      <% end %>
+        <div class="card-body text-center">
+        <h5 class="fw-bold">
+          <%= link_to pokemon.name.capitalize, pokedex_path(pokemon.name), class: "text-decoration-none text-dark" %>
+        </h5>
+          <p>
+            #<%= pokemon.pokeapi_id %> |
+            Type:
+            <%= pokemon.types.map(&:capitalize).join(" / ") %>
+          </p>
+        </div>
+      </div>
     </div>
+  <% end %>
 </div>
