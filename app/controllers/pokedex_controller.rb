@@ -18,5 +18,8 @@ class PokedexController < ApplicationController
     else
       redirect_to pokedex_index_path, alert: "Pokémon not found."
     end
+
+    species_response = HTTParty.get("https://pokeapi.co/api/v2/pokemon-species/#{params[:id]}")
+    @pokemon_species = JSON.parse(species_response.body)
   end  
 end

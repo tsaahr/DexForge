@@ -1,55 +1,98 @@
-  <% if @pokemon.present? %>
-    <div class="container py-5">
-      <%= link_to '← Back to Pokédex', root_path, class: "btn btn-secondary mb-4" %>
+<% if @pokemon.present? %>
+  <div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <%= link_to '← Back to Pokédex', root_path, class: "btn btn-outline-secondary" %>
+      <div>
+        <% prev_id = @pokemon["id"] - 1 %>
+        <% next_id = @pokemon["id"] + 1 %>
 
-      <div class="text-center">
-        <h1 class="text-capitalize"><%= @pokemon["name"] %></h1>
-        <img src="<%= @pokemon["sprites"]["front_default"] %>" alt="<%= @pokemon["name"] %>" class="img-fluid mb-3" />
+        <% if prev_id > 0 %>
+          <%= link_to "← #{prev_id}", pokedex_path(prev_id), class: "btn btn-outline-primary me-2" %>
+        <% end %>
 
-        <p><strong>Height:</strong> <%= @pokemon["height"] %></p>
-        <p><strong>Weight:</strong> <%= @pokemon["weight"] %></p>
-
-        <p><strong>Base Experience:</strong> <%= @pokemon["base_experience"] %></p>
-
-        <p><strong>Types:</strong>
-          <% @pokemon["types"].each do |type| %>
-            <span class="badge bg-primary text-capitalize"><%= type["type"]["name"] %></span>
-          <% end %>
-        </p>
+        <% if next_id <= 151 %>
+          <%= link_to "#{next_id} →", pokedex_path(next_id), class: "btn btn-outline-primary" %>
+        <% end %>
       </div>
+    </div>
 
-      <div class="mt-4">
-        <h4>Base Stats</h4>
-        <ul class="list-group">
-          <% @pokemon["stats"].each do |stat| %>
-            <li class="list-group-item d-flex justify-content-between align-items-center text-capitalize">
-              <%= stat["stat"]["name"].gsub("-", " ") %>
-              <span class="badge bg-success rounded-pill"><%= stat["base_stat"] %></span>
+    <div class="text-center">
+      <% main_type = @pokemon["types"].first["type"]["name"] %>
+        <h1 class="text-capitalize fw-bold" style="color: <%= type_color(main_type) %>;">
+          <%= @pokemon["name"] %> <small class="text-muted">#<%= @pokemon["id"] %></small>
+        </h1>
+
+      <% description = @pokemon_species["flavor_text_entries"].find { |entry| entry["language"]["name"] == "en" } %>
+      <% if description.present? %>
+        <p class="fst-italic text-muted"><%= description["flavor_text"].gsub(/\f/, " ") %></p>
+      <% else %>
+        <p class="text-muted">No description available.</p>
+      <% end %>
+
+
+      <img src="<%= @pokemon["sprites"]["other"]["official-artwork"]["front_default"] || @pokemon["sprites"]["front_default"] %>"
+           alt="<%= @pokemon["name"] %>"
+           class="img-fluid mb-4"
+           style="max-height: 250px;" />
+
+      <p><strong>Height:</strong> <%= @pokemon["height"] %> dm</p>
+      <p><strong>Weight:</strong> <%= @pokemon["weight"] %> hg</p>
+      <p><strong>Base Experience:</strong> <%= @pokemon["base_experience"] %></p>
+
+      <p><strong>Types:</strong>
+        <% @pokemon["types"].each do |type| %>
+          <span class="badge bg-primary text-capitalize me-1"><%= type["type"]["name"] %></span>
+        <% end %>
+      </p>
+    </div>
+
+    <div class="mt-5">
+      <h4 class="mb-3">Base Stats</h4>
+      <ul class="list-group">
+        <% @pokemon["stats"].each do |stat| %>
+          <li class="list-group-item d-flex justify-content-between align-items-center text-capitalize">
+            <%= stat["stat"]["name"].gsub("-", " ") %>
+            <span class="badge bg-success rounded-pill"><%= stat["base_stat"] %></span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+
+    <div class="mt-5">
+      <h4 class="mb-3">Sample Moves</h4>
+      <ul class="list-unstyled">
+        <% @pokemon["moves"].first(5).each do |move| %>
+          <li class="text-capitalize mb-1">• <%= move["move"]["name"].gsub("-", " ") %></li>
+        <% end %>
+      </ul>
+    </div>
+
+      <div class="mt-5">
+        <h4>Abilities</h4>
+        <ul>
+          <% @pokemon["abilities"].each do |a| %>
+            <li class="text-capitalize">
+              <%= a["ability"]["name"].gsub("-", " ") %>
+              <% if a["is_hidden"] %>
+                <span class="badge bg-warning text-dark ms-1">Hidden</span>
+              <% end %>
             </li>
           <% end %>
         </ul>
-      </div>
-
-
-      <div class="mt-4">
-        <h4>Sample Moves</h4>
-        <ul>
-          <% @pokemon["moves"].first(5).each do |move| %>
-            <li class="text-capitalize"><%= move["move"]["name"].gsub("-", " ") %></li>
-          <% end %>
-        </ul>
-      </div>
-
-
-      <div class="d-flex justify-content-center gap-3 mt-3">
-        <img src="<%= @pokemon["sprites"]["front_default"] %>" />
-        <img src="<%= @pokemon["sprites"]["back_default"] %>" />
-        <img src="<%= @pokemon["sprites"]["front_shiny"] %>" />
-      </div>
-
-
     </div>
 
-  <% else %>
-    <p class="text-danger">Erro ao carregar o Pokémon. Tente novamente mais tarde.</p>
-  <% end %>
+    <div class="d-flex justify-content-center gap-3 mt-5">
+      <% ["front_default", "back_default", "front_shiny", "back_shiny"].each do |sprite_key| %>
+        <% sprite = @pokemon["sprites"][sprite_key] %>
+        <% if sprite.present? %>
+          <img src="<%= sprite %>" class="img-thumbnail" style="max-width: 100px;" />
+        <% end %>
+      <% end %>
+    </div>
+
+  </div>
+<% else %>
+  <div class="container py-5">
+    <p class="text-danger text-center">Erro ao carregar o Pokémon. Tente novamente mais tarde.</p>
+  </div>
+<% end %>
