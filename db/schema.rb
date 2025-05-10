@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_09_143419) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_09_151931) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,6 +22,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_09_143419) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "types", default: [], array: true
+    t.integer "height"
+    t.integer "weight"
+    t.integer "base_experience"
+    t.text "flavor_text"
+    t.string "abilities"
+    t.string "moves"
+    t.jsonb "sprites"
     t.index ["pokeapi_id"], name: "index_pokemons_on_pokeapi_id"
   end
 

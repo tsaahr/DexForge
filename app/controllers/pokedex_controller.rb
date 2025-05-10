@@ -1,25 +1,33 @@
+require 'net/http'
+require 'json'
+
 class PokedexController < ApplicationController
   def index
     @types = Pokemon.pluck(:types).flatten.uniq.sort
-    @pokemons = Pokemon.all
-    
-    @pokemons = @pokemons.where("name ILIKE ?", "%#{params[:query]}%") if params[:query].present?
-    
-    if params[:type].present? && params[:type] != "all"
-      @pokemons = @pokemons.select { |p| p.types.include?(params[:type]) }
+    @pokemons = Pokemon.order(:pokeapi_id)
+
+    if params[:query].present?
+      @pokemons = @pokemons.where("name ILIKE ?", "%#{params[:query]}%")
     end
-    
+
+    if params[:type].present? && params[:type] != "all"
+      @pokemons = @pokemons.where("types @> ARRAY[?]::varchar[]", [params[:type]])
+    end
   end
 
   def show
-    response = HTTParty.get("https://pokeapi.co/api/v2/pokemon/#{params[:id]}")
+    name = params[:id].to_s.strip.downcase
+    
+    @pokemon = Pokemon.find_by(name: name)
+  
+    response = HTTParty.get("https://pokeapi.co/api/v2/pokemon/#{@pokemon.pokeapi_id}")
     if response.success?
-      @pokemon = JSON.parse(response.body)
+      @pokemon_api = JSON.parse(response.body)
     else
-      redirect_to pokedex_index_path, alert: "Pokémon not found."
+      @pokemon_api = nil
     end
-
-    species_response = HTTParty.get("https://pokeapi.co/api/v2/pokemon-species/#{params[:id]}")
-    @pokemon_species = JSON.parse(species_response.body)
-  end  
+  
+  end
+  
+  
 end

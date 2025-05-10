@@ -5,8 +5,6 @@ Rails.application.routes.draw do
   root 'pokedex#index'
   get '/pokemon/:name', to: 'pokedex#show', as: 'pokemon'
   
-  Rails.application.routes.draw do
-    resources :pokedex, only: [:index, :show]
-  end
-
+  resources :pokedex, only: [:index, :show], param: :id
+  
 end
