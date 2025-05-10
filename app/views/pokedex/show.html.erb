@@ -36,8 +36,13 @@
 
       <p><strong>Height:</strong> <%= @pokemon.height %> dm</p>
       <p><strong>Weight:</strong> <%= @pokemon.weight %> hg</p>
-      <p><strong>Base Experience:</strong> <%= @pokemon.base_experience %></p>
+      
 
+      <div class="my-4">
+        <label for="levelRange" class="form-label fw-bold">Level: <span id="levelValue">1</span></label>
+        <input type="range" class="form-range" id="levelRange" min="1" max="100" value="1">
+      </div>
+      
       <p><strong>Types:</strong>
         <% @pokemon.types.each do |type| %>
           <span class="badge bg-primary text-capitalize me-1"><%= type %></span>
@@ -51,7 +56,7 @@
         <% @pokemon.stats.each do |stat| %>
           <li class="list-group-item d-flex justify-content-between align-items-center text-capitalize">
             <%= stat["stat"]["name"].gsub("-", " ") %>
-            <span class="badge bg-success rounded-pill"><%= stat["base_stat"] %></span>
+            <span class="badge bg-success rounded-pill stat-value" data-base="<%= stat["base_stat"] %>">?</span>
           </li>
         <% end %>
       </ul>
@@ -116,3 +121,28 @@
     <p class="text-danger text-center">Erro ao carregar o Pokémon. Tente novamente mais tarde.</p>
   </div>
 <% end %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const levelSlider = document.getElementById('levelRange');
+    const levelValueDisplay = document.getElementById('levelValue');
+    const statElements = document.querySelectorAll('.stat-value');
+
+    function updateStats(level) {
+      statElements.forEach(el => {
+        const base = parseInt(el.dataset.base);
+        const stat = Math.floor(base + level * 2);
+        el.textContent = stat;
+      });
+    }
+
+    levelSlider.addEventListener('input', function () {
+      const level = parseInt(this.value);
+      levelValueDisplay.textContent = level;
+      updateStats(level);
+    });
+
+    updateStats(1);
+  });
+</script>
+
