@@ -16,9 +16,13 @@ class PokedexController < ApplicationController
   end
 
   def show
-    name = params[:id].to_s.strip.downcase
-    
-    @pokemon = Pokemon.find_by(name: name)
+    param = params[:id].to_s.strip.downcase
+
+    if param.match?(/^\d+$/)
+      @pokemon = Pokemon.find_by(pokeapi_id: param.to_i)
+    else
+      @pokemon = Pokemon.find_by(name: param)
+    end
   
     response = HTTParty.get("https://pokeapi.co/api/v2/pokemon/#{@pokemon.pokeapi_id}")
     if response.success?
