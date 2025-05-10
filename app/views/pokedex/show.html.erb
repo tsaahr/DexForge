@@ -43,6 +43,7 @@
         <input type="range" class="form-range" id="levelRange" min="1" max="100" value="1">
       </div>
       
+
       <p><strong>Types:</strong>
         <% @pokemon.types.each do |type| %>
           <span class="badge bg-primary text-capitalize me-1"><%= type %></span>
@@ -63,34 +64,11 @@
     </div>
 
     <div class="mt-5">
-      <h4 class="mb-4">Sample Moves</h4>
-      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        <% @sample_moves.each do |move| %>
-          <div class="col">
-            <div class="card h-100 shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title text-capitalize">
-                  <%= move[:name].gsub("-", " ") %>
-                  <% if move[:damage_class] %>
-                    <span class="badge bg-info text-dark text-uppercase"><%= move[:damage_class] %></span>
-                  <% end %>
-                </h5>
-
-                <p class="card-text mb-1"><strong>Type:</strong> <%= move[:move_type]&.capitalize || "N/A" %></p>
-                <p class="card-text mb-1"><strong>Power:</strong> <%= move[:power] || "N/A" %></p>
-                <p class="card-text mb-1"><strong>Accuracy:</strong> <%= move[:accuracy] || "N/A" %></p>
-                <p class="card-text mb-1"><strong>PP:</strong> <%= move[:pp] || "N/A" %></p>
-
-                <% if move[:description].present? %>
-                  <p class="card-text mt-3 text-muted"><em><%= move[:description].gsub("\n", " ") %></em></p>
-                <% end %>
-
-              </div>
-            </div>
-          </div>
-        <% end %>
+      <h4 class="mb-4">Moves</h4>
+      <div id="moves-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
       </div>
     </div>
+
 
 
     <div class="mt-5">
@@ -116,11 +94,6 @@
       <% end %>
     </div>
   </div>
-<% else %>
-  <div class="container py-5">
-    <p class="text-danger text-center">Erro ao carregar o Pokémon. Tente novamente mais tarde.</p>
-  </div>
-<% end %>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -131,6 +104,7 @@
     function updateStats(level) {
       statElements.forEach(el => {
         const base = parseInt(el.dataset.base);
+        // Fórmula provisória: base_stat + level * 2
         const stat = Math.floor(base + level * 2);
         el.textContent = stat;
       });
@@ -140,9 +114,50 @@
       const level = parseInt(this.value);
       levelValueDisplay.textContent = level;
       updateStats(level);
+      renderMoves(level);
     });
+
 
     updateStats(1);
   });
+  function renderMoves(level) {
+    const container = document.getElementById('moves-container');
+    container.innerHTML = ''; // limpa antes
+
+    const moves = allMoves
+      .filter(move => move.level <= level)
+      .sort((a, b) => (b.power || 0) - (a.power || 0))
+      .slice(0, 5);
+
+
+  moves.forEach(move => {
+    const card = document.createElement('div');
+    card.className = 'col';
+    card.innerHTML = `
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-capitalize">
+            ${move.name.replace(/-/g, ' ')}
+            ${move.damage_class ? `<span class="badge bg-info text-dark text-uppercase">${move.damage_class}</span>` : ''}
+          </h5>
+          <p class="card-text mb-1"><strong>Type:</strong> ${move.move_type?.charAt(0).toUpperCase() + move.move_type?.slice(1) || 'N/A'}</p>
+          <p class="card-text mb-1"><strong>Power:</strong> ${move.power || 'N/A'}</p>
+          <p class="card-text mb-1"><strong>Accuracy:</strong> ${move.accuracy || 'N/A'}</p>
+          <p class="card-text mb-1"><strong>PP:</strong> ${move.pp || 'N/A'}</p>
+          ${move.description ? `<p class="card-text mt-3 text-muted"><em>${move.description.replace(/\n/g, ' ')}</em></p>` : ''}
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+  const allMoves = <%= raw @all_moves.to_json %>;
 </script>
+
+<% else %>
+  <div class="container py-5">
+    <p class="text-danger text-center">Erro ao carregar o Pokémon. Tente novamente mais tarde.</p>
+  </div>
+<% end %>
+
 

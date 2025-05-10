@@ -32,66 +32,29 @@ class PokedexController < ApplicationController
     end
 
     #moves diff
-    @evolution_stage = get_evolution_stage(@pokemon.name)
-
-    max_level = case @evolution_stage
-    when 1 then 20
-    when 2 then 40
-    else 100
-    end
-
-
-    @sample_moves = @pokemon_api["moves"]
+    @all_moves = @pokemon_api["moves"]
     .select do |move|
       move["version_group_details"].any? do |detail|
-        detail["move_learn_method"]["name"] == "level-up" &&
-        detail["level_learned_at"] <= max_level
+        detail["move_learn_method"]["name"] == "level-up"
       end
     end
     .uniq { |m| m["move"]["name"] }
-    .first(5)
-  
-  @sample_moves = @sample_moves.map do |move|
-    move_data = Move.find_by(name: move["move"]["name"])
-  
-    {
-      name: move["move"]["name"],
-      power: move_data&.power,
-      description: move_data&.description
-    }
-    end
-  end
-
-
-  def get_evolution_stage(pokemon_name)
-    species_response = HTTParty.get("https://pokeapi.co/api/v2/pokemon-species/#{pokemon_name}")
-    return 1 unless species_response.success?
-  
-    species_data = JSON.parse(species_response.body)
-    evolution_chain_url = species_data["evolution_chain"]["url"]
-    
-    chain_response = HTTParty.get(evolution_chain_url)
-    return 1 unless chain_response.success?
-  
-    chain_data = JSON.parse(chain_response.body)
-  
-    stage = 1
-    current = chain_data["chain"]
-  
-    loop do
-      return stage if current["species"]["name"] == pokemon_name
-  
-      if current["evolves_to"].any?
-        current = current["evolves_to"].first
-        stage += 1
-      else
-        break
+    .map do |move|
+      move_data = Move.find_by(name: move["move"]["name"])
+      level_detail = move["version_group_details"].find do |detail|
+        detail["move_learn_method"]["name"] == "level-up"
       end
+  
+      {
+        name: move["move"]["name"],
+        level: level_detail["level_learned_at"],
+        power: move_data&.power,
+        accuracy: move_data&.accuracy,
+        pp: move_data&.pp,
+        move_type: move_data&.move_type,
+        damage_class: move_data&.damage_class,
+        description: move_data&.description
+      }
     end
-    stage
-  end
-  
-  
-  
-  
+  end  
 end
