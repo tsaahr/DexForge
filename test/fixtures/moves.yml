@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  move_type: MyString
+  damage_class: MyString
+  power: 1
+  accuracy: 1
+  pp: 1
+  description: MyText
+  pokeapi_id: 1
+
+two:
+  name: MyString
+  move_type: MyString
+  damage_class: MyString
+  power: 1
+  accuracy: 1
+  pp: 1
+  description: MyText
+  pokeapi_id: 1

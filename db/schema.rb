@@ -10,9 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_09_151931) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_10_175249) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "moves", force: :cascade do |t|
+    t.string "name"
+    t.string "move_type"
+    t.string "damage_class"
+    t.integer "power"
+    t.integer "accuracy"
+    t.integer "pp"
+    t.text "description"
+    t.integer "pokeapi_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "pokemons", force: :cascade do |t|
     t.string "name"
@@ -32,4 +45,37 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_09_151931) do
     t.index ["pokeapi_id"], name: "index_pokemons_on_pokeapi_id"
   end
 
+  create_table "user_pokemons", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "pokemon_id", null: false
+    t.integer "level"
+    t.integer "experience"
+    t.string "nickname"
+    t.integer "current_hp"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "hp"
+    t.integer "attack"
+    t.integer "defense"
+    t.integer "speed"
+    t.integer "sp_attack"
+    t.integer "sp_defense"
+    t.integer "hp_iv"
+    t.integer "attack_iv"
+    t.integer "defense_iv"
+    t.integer "sp_attack_iv"
+    t.integer "sp_defense_iv"
+    t.integer "speed_iv"
+    t.index ["pokemon_id"], name: "index_user_pokemons_on_pokemon_id"
+    t.index ["user_id"], name: "index_user_pokemons_on_user_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "user_pokemons", "pokemons"
+  add_foreign_key "user_pokemons", "users"
 end

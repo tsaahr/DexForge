@@ -30,8 +30,68 @@ class PokedexController < ApplicationController
     else
       @pokemon_api = nil
     end
+
+    #moves diff
+    @evolution_stage = get_evolution_stage(@pokemon.name)
+
+    max_level = case @evolution_stage
+    when 1 then 20
+    when 2 then 40
+    else 100
+    end
+
+
+    @sample_moves = @pokemon_api["moves"]
+    .select do |move|
+      move["version_group_details"].any? do |detail|
+        detail["move_learn_method"]["name"] == "level-up" &&
+        detail["level_learned_at"] <= max_level
+      end
+    end
+    .uniq { |m| m["move"]["name"] }
+    .first(5)
   
+  @sample_moves = @sample_moves.map do |move|
+    move_data = Move.find_by(name: move["move"]["name"])
+  
+    {
+      name: move["move"]["name"],
+      power: move_data&.power,
+      description: move_data&.description
+    }
+    end
   end
+
+
+  def get_evolution_stage(pokemon_name)
+    species_response = HTTParty.get("https://pokeapi.co/api/v2/pokemon-species/#{pokemon_name}")
+    return 1 unless species_response.success?
+  
+    species_data = JSON.parse(species_response.body)
+    evolution_chain_url = species_data["evolution_chain"]["url"]
+    
+    chain_response = HTTParty.get(evolution_chain_url)
+    return 1 unless chain_response.success?
+  
+    chain_data = JSON.parse(chain_response.body)
+  
+    stage = 1
+    current = chain_data["chain"]
+  
+    loop do
+      return stage if current["species"]["name"] == pokemon_name
+  
+      if current["evolves_to"].any?
+        current = current["evolves_to"].first
+        stage += 1
+      else
+        break
+      end
+    end
+    stage
+  end
+  
+  
   
   
 end
