@@ -19,8 +19,9 @@ class UserPokemon < ApplicationRecord
   def gain_experience(amount)
     self.experience += amount
     leveled_up = false
+    level_limit = 100
   
-    while experience >= xp_needed_for_next_level
+    while experience >= xp_needed_for_next_level && self.level < level_limit
       self.experience -= xp_needed_for_next_level
       self.level += 1
       leveled_up = true

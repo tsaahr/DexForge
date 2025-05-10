@@ -1,99 +1,116 @@
 <% if @pokemon.present? %>
   <div class="container py-5">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <%= link_to '← Back to Pokédex', root_path, class: "btn btn-outline-secondary" %>
-      <div>
-        <% prev_id = @pokemon.pokeapi_id - 1 %>
-        <% next_id = @pokemon.pokeapi_id + 1 %>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <%= link_to '← Back to Pokédex', root_path, class: "btn btn-outline-light" %>
+  <div>
+    <% prev_id = @pokemon.pokeapi_id - 1 %>
+    <% next_id = @pokemon.pokeapi_id + 1 %>
 
-        <% if prev_id > 0 %>
-          <%= link_to "← #{prev_id}", pokedex_path(prev_id), class: "btn btn-outline-primary me-2" %>
-        <% end %>
+    <% if prev_id > 0 %>
+      <%= link_to "← #{prev_id}", pokedex_path(prev_id), class: "btn btn-outline-light me-2" %>
+    <% end %>
 
-        <% if next_id <= 151 %>
-          <%= link_to "#{next_id} →", pokedex_path(next_id), class: "btn btn-outline-primary" %>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="text-center">
-      <% main_type = @pokemon.types.first %> 
-      <h1 class="text-capitalize fw-bold" style="color: <%= type_color(main_type) %>;">
-        <%= @pokemon.name %> <small class="text-muted">#<%= @pokemon.pokeapi_id %></small>
-      </h1>
-
-      <% if @pokemon.flavor_text.present? %>
-        <p class="fst-italic text-muted"><%= @pokemon.flavor_text %></p>
-      <% else %>
-        <p class="text-muted">No description available.</p>
-      <% end %>
-
-      <img src="<%= @pokemon.image_url %>"
-           alt="<%= @pokemon.name %>"
-           class="img-fluid mb-4"
-           style="max-height: 250px;" />
-
-      <p><strong>Height:</strong> <%= @pokemon.height %> dm</p>
-      <p><strong>Weight:</strong> <%= @pokemon.weight %> hg</p>
-      
-
-      <div class="my-4">
-        <label for="levelRange" class="form-label fw-bold">Level: <span id="levelValue">1</span></label>
-        <input type="range" class="form-range" id="levelRange" min="1" max="100" value="1">
-      </div>
-      
-
-      <p><strong>Types:</strong>
-        <% @pokemon.types.each do |type| %>
-          <span class="badge bg-primary text-capitalize me-1"><%= type %></span>
-        <% end %>
-      </p>
-    </div>
-
-    <div class="mt-5">
-      <h4 class="mb-3">Base Stats</h4>
-      <ul class="list-group">
-        <% @pokemon.stats.each do |stat| %>
-          <li class="list-group-item d-flex justify-content-between align-items-center text-capitalize">
-            <%= stat["stat"]["name"].gsub("-", " ") %>
-            <span class="badge bg-success rounded-pill stat-value" data-base="<%= stat["base_stat"] %>">?</span>
-          </li>
-        <% end %>
-      </ul>
-    </div>
-
-    <div class="mt-5">
-      <h4 class="mb-4">Moves</h4>
-      <div id="moves-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      </div>
-    </div>
-
-
-
-    <div class="mt-5">
-      <h4>Abilities</h4>
-      <ul>
-        <% @pokemon_api["abilities"].each do |a| %>
-          <li class="text-capitalize">
-            <%= a["ability"]["name"].gsub("-", " ") %>
-            <% if a["is_hidden"] %>
-              <span class="badge bg-warning text-dark ms-1">Hidden</span>
-            <% end %>
-          </li>
-        <% end %>
-      </ul>
-    </div>
-
-    <div class="d-flex justify-content-center gap-3 mt-5">
-      <% ["front_default", "back_default", "front_shiny", "back_shiny"].each do |sprite_key| %>
-        <% sprite = @pokemon_api["sprites"][sprite_key] %>
-        <% if sprite.present? %>
-          <img src="<%= sprite %>" class="img-thumbnail" style="max-width: 100px;" />
-        <% end %>
-      <% end %>
-    </div>
+    <% if next_id <= 151 %>
+      <%= link_to "#{next_id} →", pokedex_path(next_id), class: "btn btn-outline-light" %>
+    <% end %>
   </div>
+</div>
+
+
+    <div class="container py-5">
+      <div class="card shadow-lg bg-dark text-light mb-4 border-0 rounded-4">
+        <div class="card-body text-center">
+          <% main_type = @pokemon.types.first %>
+          <h1 class="text-capitalize fw-bold display-4" style="color: <%= type_color(main_type) %>;">
+            <%= @pokemon.name %> <small class="text-muted fs-4">#<%= @pokemon.pokeapi_id %></small>
+          </h1>
+
+          <% if @pokemon.flavor_text.present? %>
+            <p class="fst-italic text-light lead px-md-5 mt-3"><%= @pokemon.flavor_text %></p>
+          <% else %>
+            <p class="text-light lead">No description available.</p>
+          <% end %>
+
+          <img src="<%= @pokemon.image_url %>"
+              alt="<%= @pokemon.name %>"
+              class="img-fluid mb-4 shadow rounded-4"
+              style="max-height: 300px;" />
+
+          <div class="row justify-content-center mb-3">
+            <div class="col-md-4">
+              <p class="mb-1"><strong>Height:</strong> <%= @pokemon.height %> dm</p>
+              <p><strong>Weight:</strong> <%= @pokemon.weight %> hg</p>
+            </div>
+          </div>
+
+          <div class="my-4 w-100 px-md-5">
+            <label for="levelRange" class="form-label fw-bold">Level: <span id="levelValue">1</span></label>
+            <input type="range" class="form-range" id="levelRange" min="1" max="100" value="1">
+          </div>
+
+          <p><strong>Types:</strong></p>
+          <div>
+            <% @pokemon.types.each do |type| %>
+              <span class="badge bg-primary text-capitalize me-1 px-3 py-2 fs-6"><%= type %></span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="card shadow-lg bg-dark text-light mb-4 border-0 rounded-4">
+        <div class="card-body">
+          <h4 class="mb-4 text-center">Base Stats</h4>
+          <ul class="list-group list-group-flush">
+            <% @pokemon.stats.each do |stat| %>
+              <li class="list-group-item bg-dark text-light d-flex justify-content-between align-items-center text-capitalize border-secondary">
+                <%= stat["stat"]["name"].gsub("-", " ") %>
+                <span class="badge bg-success rounded-pill stat-value px-3 py-2 fs-6" data-base="<%= stat["base_stat"] %>">?</span>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+
+<div class="card shadow-lg bg-dark text-light mb-4 border-0 rounded-4">
+  <div class="card-body">
+    <h4 class="mb-4 text-center text-light">Moves</h4>
+    <div id="moves-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3"></div>
+  </div>
+</div>
+
+
+      <div class="card shadow-lg bg-dark text-light mb-4 border-0 rounded-4">
+        <div class="card-body">
+          <h4 class="mb-4 text-center">Abilities</h4>
+          <ul class="list-unstyled text-center">
+            <% @pokemon_api["abilities"].each do |a| %>
+              <li class="mb-2 text-capitalize fs-5">
+                <%= a["ability"]["name"].gsub("-", " ") %>
+                <% if a["is_hidden"] %>
+                  <span class="badge bg-warning text-dark ms-1">Hidden</span>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card shadow-lg bg-dark text-light border-0 rounded-4">
+        <div class="card-body text-center">
+          <h4 class="mb-4">Sprites</h4>
+          <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <% ["front_default", "back_default", "front_shiny", "back_shiny"].each do |sprite_key| %>
+              <% sprite = @pokemon_api["sprites"][sprite_key] %>
+              <% if sprite.present? %>
+                <img src="<%= sprite %>" class="img-thumbnail bg-light rounded-3 shadow" style="max-width: 100px;" />
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -122,8 +139,7 @@
   });
   function renderMoves(level) {
     const container = document.getElementById('moves-container');
-    container.innerHTML = ''; // limpa antes
-
+    container.innerHTML = '';
     const moves = allMoves
       .filter(move => move.level <= level)
       .sort((a, b) => (b.power || 0) - (a.power || 0))
@@ -134,9 +150,9 @@
     const card = document.createElement('div');
     card.className = 'col';
     card.innerHTML = `
-      <div class="card h-100 shadow-sm">
+      <div class="card h-100 shadow-sm bg-dark text-light">
         <div class="card-body">
-          <h5 class="card-title text-capitalize">
+          <h5 class="card-title text-capitalize text-light">
             ${move.name.replace(/-/g, ' ')}
             ${move.damage_class ? `<span class="badge bg-info text-dark text-uppercase">${move.damage_class}</span>` : ''}
           </h5>
