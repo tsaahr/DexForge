@@ -1,12 +1,12 @@
 <div class="container mx-auto my-6 px-4">
-  <h1 class="mb-6 text-3xl font-semibold text-center text-white">Meus Pokémons</h1>
+  <h1 class="mb-6 text-3xl font-semibold text-center text-white">My Pokémons</h1>
 
   <% if @user_pokemons.present? %>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       <% @user_pokemons.each do |user_pokemon| %>
         <% pokemon = user_pokemon.pokemon %>
-        <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden text-white flex flex-col items-center text-center">
-          <img src="<%= pokemon.image_url %>" alt="<%= pokemon.name %>" class="w-full h-48 object-contain bg-white p-4">
+        <div class="bg-white/10 border border-white/20 backdrop-blur-md rounded-xl shadow-md overflow-hidden text-white flex flex-col items-center text-center transition hover:scale-105 hover:shadow-lg">
+          <img src="<%= pokemon.image_url %>" alt="<%= pokemon.name %>" class="w-full h-48 object-contain p-4">
           <div class="p-4 w-full">
             <h2 class="text-xl font-bold mb-2"><%= pokemon.name.capitalize %></h2>
             <p class="text-sm text-gray-300 mb-1"><strong>Tipo:</strong> <%= pokemon.types.join(", ") %></p>
@@ -17,6 +17,6 @@
       <% end %>
     </div>
   <% else %>
-    <p class="text-white text-center mt-6">You dont have pokemons</p>
+    <p class="text-white text-center mt-6">You don't have any Pokémons yet.</p>
   <% end %>
 </div>

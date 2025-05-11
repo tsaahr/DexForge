@@ -2,7 +2,7 @@ class MyPokemonsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @user_pokemons = current_user.user_pokemons.includes(:pokemon)
+    @user_pokemons = UserPokemon.where(user: current_user).includes(:pokemon)
   end
 
   def destroy
