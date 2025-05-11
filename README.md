@@ -1,51 +1,31 @@
-POKEDEX APP
+DexForge
 
-This is a personal project: a simple Pokédex built using Ruby on Rails and the PokéAPI.
-The main goal was to practice backend development, API integration, and display dynamic content in a clean and organized interface.
-Description
+DexForge is a personal project built with Ruby on Rails that started as a simple Pokédex and has evolved into a more complete application. It integrates user authentication, dynamic data from the PokéAPI, and interactive features for users.
 
-    All Pokémon are fetched from the PokéAPI and stored in a local SQLite database.
+Currently, the system allows:
 
-    This approach keeps the index page lightweight and fast.
+    Viewing a list of Pokémon fetched from the PokéAPI and stored in a PostgreSQL database.
 
-    The index displays all Pokémon with their name and sprite.
+    Accessing individual Pokémon pages with data such as name, sprite, types, height, weight, stats, and moves.
 
-    The show page fetches detailed information in real time from the PokéAPI.
+    Selecting a level for the Pokémon, which dynamically adjusts and displays its stats based on the chosen level.
 
-Features
+    Showing the best level-up moves the Pokémon can learn up to the selected level, including name, description, and power.
 
-    List of Pokémon from local database
+    User authentication with Devise.
 
-    Individual detail pages with:
+    A "My Pokémons" section where users can view the Pokémon they have captured.
 
-        Name
+    Evolution system based on level progression.
 
-        Image (sprite)
+Planned features include:
 
-        Height
+    Pokémon capture system.
 
-        Weight
+    Battles between users' Pokémon.
 
-        Types (displayed as badges)
+    Implementation of IVs (Individual Values) to personalize Pokémon stats.
 
-Technologies Used
+    Type-based advantages and disadvantages during battles.
 
-    Ruby on Rails
-
-    SQLite3
-
-    HTTParty
-
-    PokéAPI
-
-    Bootstrap 5
-
-Notes
-
-    This project uses SQLite3 as the database.
-
-    Only basic Pokémon info is stored (name, image, pokeapi ID).
-
-    The detail page fetches live data from the PokéAPI each time it is accessed.
-
-    Type advantages and advanced battle logic are not yet implemented.
+The project uses Ruby on Rails, PostgreSQL, Devise for authentication, and direct integration with the PokéAPI for real-time data. The interface is styled with Bootstrap 5 and aims for a clean, responsive experience.
