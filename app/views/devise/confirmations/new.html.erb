@@ -1,0 +1,35 @@
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="card shadow-lg border-0 rounded-4 bg-dark bg-opacity-75 text-white" style="width: 100%; max-width: 420px;">
+    <div class="card-body p-4">
+      <h2 class="text-center mb-4 fw-bold">Login</h2>
+
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <div class="mb-3">
+          <%= f.label :email, class: "form-label" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control bg-light text-dark" %>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :password, class: "form-label" %>
+          <%= f.password_field :password, autocomplete: "current-password", class: "form-control bg-light text-dark" %>
+        </div>
+
+        <div class="form-check mb-3">
+          <%= f.check_box :remember_me, class: "form-check-input" %>
+          <%= f.label :remember_me, class: "form-check-label" %>
+        </div>
+
+        <div class="d-grid gap-2">
+          <%= f.submit "Login", class: "btn btn-danger fw-bold" %>
+        </div>
+      <% end %>
+
+      <div class="mt-3 text-center">
+        <%= link_to "Esqueceu sua senha?", new_password_path(resource_name), class: "text-white-50 text-decoration-none" %>
+      </div>
+      <div class="mt-2 text-center">
+        <%= link_to "Criar nova conta", new_registration_path(resource_name), class: "text-white text-decoration-underline" %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="card shadow-lg border-0 rounded-4 bg-dark bg-opacity-75 text-white" style="width: 100%; max-width: 520px;">
+    <div class="card-body p-4">
+      <h2 class="text-center mb-4 fw-bold">Edit Account</h2>
+
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+        <div class="mb-3">
+          <%= f.label :email, "Email", class: "form-label" %>
+          <%= f.email_field :email, class: "form-control bg-light text-dark", autocomplete: "email" %>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :password, "New Password", class: "form-label" %>
+          <%= f.password_field :password, autocomplete: "new-password", class: "form-control bg-light text-dark" %>
+          <div class="form-text text-muted">Leave blank if you don't want to change it</div>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :password_confirmation, "Confirm New Password", class: "form-label" %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control bg-light text-dark" %>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :current_password, "Current Password", class: "form-label" %>
+          <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control bg-light text-dark", required: true %>
+          <div class="form-text text-muted">We need your current password to confirm your changes</div>
+        </div>
+
+        <div class="d-grid gap-2">
+          <%= f.submit "Update", class: "btn btn-danger fw-bold" %>
+        </div>
+      <% end %>
+
+      <hr class="bg-secondary mt-4" />
+
+      <div class="text-center">
+        <%= button_to "Cancel my account", registration_path(resource_name), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-outline-light mt-2" %>
+      </div>
+    </div>
+  </div>
+</div>

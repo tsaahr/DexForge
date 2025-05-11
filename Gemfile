@@ -25,6 +25,10 @@ gem "sassc-rails"
 gem "bootstrap", "~> 5.2.3"
 
 
+#auth
+gem "devise"
+
+
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 

@@ -7,4 +7,6 @@ Rails.application.routes.draw do
   
   resources :pokedex, only: [:index, :show], param: :id
   
+  devise_for :users
+
 end
