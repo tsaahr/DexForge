@@ -6,6 +6,7 @@ class UserPokemon < ApplicationRecord
   validates :experience, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   before_create :assign_random_ivs
+  before_save :check_evolution!
 
   def assign_random_ivs
     self.hp_iv = rand(0..100)
@@ -25,6 +26,7 @@ class UserPokemon < ApplicationRecord
       self.experience -= xp_needed_for_next_level
       self.level += 1
       leveled_up = true
+      check_evolution!
     end
   
     calculate_stats if leveled_up
@@ -91,4 +93,17 @@ class UserPokemon < ApplicationRecord
     pokemon.stats.find { |s| s["stat"]["name"] == stat_name }["base_stat"]
   end
 
+
+  private
+
+  def check_evolution!
+    return unless pokemon.evolution_level.present?
+    return unless level >= pokemon.evolution_level
+    return unless pokemon.evolution_method == "level-up"
+  
+    if pokemon.evolves_to
+      self.pokemon = pokemon.evolves_to
+      puts "#{pokemon.name} evolved for #{self.pokemon.name}!"
+    end
+  end
 end

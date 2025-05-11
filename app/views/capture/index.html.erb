@@ -1,0 +1,7 @@
+<div class="bg-white bg-opacity-75 p-4 rounded shadow">
+  <h2 class="mb-4 text-danger fw-bold">Capture Zone</h2>
+
+  <p class="mb-3">Welcome, <%= current_user.email %>! Ready to catch some Pokémon?</p>
+
+  <%= button_to "Throw Pokéball!", "#", method: :post, class: "btn btn-danger" %>
+</div>

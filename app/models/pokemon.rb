@@ -1,4 +1,10 @@
 class Pokemon < ApplicationRecord
+
+  has_many :user_pokemons, dependent: :destroy
+  has_many :users, through: :user_pokemons
+  belongs_to :evolves_to, class_name: 'Pokemon', optional: true
+  has_many :pre_evolutions, class_name: 'Pokemon', foreign_key: 'evolves_to_id'
+
   def self.fetch_or_create_by_name(name)
     normalized_name = name.strip.downcase
     Rails.logger.debug ">>> Fetching API for: #{normalized_name}"

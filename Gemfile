@@ -27,6 +27,10 @@ gem "bootstrap", "~> 5.2.3"
 
 #auth
 gem "devise"
+group :development do
+  gem 'letter_opener'
+end
+
 
 
 # Use Redis adapter to run Action Cable in production
