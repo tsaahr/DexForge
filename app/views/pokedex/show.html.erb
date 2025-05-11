@@ -96,21 +96,6 @@
         </div>
       </div>
 
-      <div class="card shadow-lg bg-dark text-light border-0 rounded-4">
-        <div class="card-body text-center">
-          <h4 class="mb-4">Sprites</h4>
-          <div class="d-flex justify-content-center gap-3 flex-wrap">
-            <% ["front_default", "back_default", "front_shiny", "back_shiny"].each do |sprite_key| %>
-              <% sprite = @pokemon_api["sprites"][sprite_key] %>
-              <% if sprite.present? %>
-                <img src="<%= sprite %>" class="img-thumbnail bg-light rounded-3 shadow" style="max-width: 100px;" />
-              <% end %>
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </div>
-
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -121,7 +106,6 @@
     function updateStats(level) {
       statElements.forEach(el => {
         const base = parseInt(el.dataset.base);
-        // Fórmula provisória: base_stat + level * 2
         const stat = Math.floor(base + level * 2);
         el.textContent = stat;
       });
