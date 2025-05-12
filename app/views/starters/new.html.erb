@@ -1,0 +1,14 @@
+<h1>Choose Your Starter Pokémon</h1>
+
+<%= form_with url: starter_path, method: :post do %>
+  <div>
+    <% @starter_options.each do |pokemon| %>
+      <div>
+        <%= radio_button_tag :pokemon, pokemon %>
+        <%= label_tag "pokemon_#{pokemon}", pokemon.capitalize %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= submit_tag "Choose" %>
+<% end %>
