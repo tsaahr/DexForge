@@ -49,17 +49,18 @@ class CaptureController < ApplicationController
 
   private
 
-  
+    
   def fetch_best_moves(pokemon, level)
-    all_moves = pokemon.moves
+    pokemon_moves = pokemon.pokemon_moves.includes(:move)
   
-    return [] if all_moves.blank?
+    return [] if pokemon_moves.blank?
   
-    available_moves = all_moves.select do |move|
-      move.level_learned_at.nil? || move.level_learned_at <= level
+    available_moves = pokemon_moves.select do |pokemon_move|
+      pokemon_move.level_learned_at.nil? || pokemon_move.level_learned_at <= level
     end
-  
-    move_objects = available_moves.map do |move|
+
+    move_objects = available_moves.map do |pokemon_move|
+      move = pokemon_move.move
       {
         name: move.name,
         power: move.power,
@@ -70,9 +71,9 @@ class CaptureController < ApplicationController
         description: move.description
       }
     end
-  
     move_objects.sort_by { |m| -(m[:power] || 0) }.first(4)
   end
+  
   
   
   def extract_stats(pokemon)
