@@ -1,6 +1,7 @@
 class UserPokemon < ApplicationRecord
   belongs_to :user
   belongs_to :pokemon
+  belongs_to :wild_pokemon
 
   validates :level, presence: true, numericality: { greater_than: 0 }
   validates :experience, presence: true, numericality: { greater_than_or_equal_to: 0 }
@@ -101,9 +102,9 @@ class UserPokemon < ApplicationRecord
     return unless level >= pokemon.evolution_level
     return unless pokemon.evolution_method == "level-up"
   
-    if pokemon.evolves_to
-      self.pokemon = pokemon.evolves_to
-      puts "#{pokemon.name} evolved for #{self.pokemon.name}!"
-    end
+    if pokemon.evolution
+      self.pokemon = pokemon.evolution
+      puts "#{pokemon.name} evolved into #{self.pokemon.name}!"
+    end    
   end
 end

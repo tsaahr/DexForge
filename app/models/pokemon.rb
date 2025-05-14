@@ -4,6 +4,9 @@ class Pokemon < ApplicationRecord
   has_many :users, through: :user_pokemons
   belongs_to :evolves_from, class_name: 'Pokemon', optional: true
   has_one :evolution, class_name: 'Pokemon', foreign_key: :evolves_from
+  has_many :pokemon_moves
+  has_many :moves, through: :pokemon_moves
+
 
   def self.fetch_or_update(id)
     pokemon_response = HTTParty.get("https://pokeapi.co/api/v2/pokemon/#{id}")
@@ -46,9 +49,5 @@ class Pokemon < ApplicationRecord
       current = current.evolution
     end
     current
-  end
-  
-  
-
-  
+  end  
 end

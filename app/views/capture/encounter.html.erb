@@ -1,39 +1,61 @@
-<h1 style="text-align: center; font-size: 2em; color: #333; margin-top: 30px;">Wild Pokémon Encounter!</h1>
+<% if @wild_pokemon.present? %>
+  <div class="container py-5">
+    <div class="card shadow-lg bg-dark text-light mb-4 border-0 rounded-4">
+      <div class="card-body text-center">
+        <h1 class="text-capitalize fw-bold display-4">
+          <%= @wild_pokemon.pokemon.name %>
+          <small class="text-muted fs-4">Lv. <%= @wild_pokemon.level %></small>
+        </h1>
 
-<div style="display: flex; justify-content: center; margin-top: 30px;">
-  <div style="border: 2px solid #4CAF50; border-radius: 15px; padding: 20px; max-width: 350px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
-    
-    <h2 style="font-size: 1.5em; color: #4CAF50; margin-bottom: 10px;">
-      <%= @wild_pokemon.name.capitalize %> (Lv. <%= @wild_pokemon.level %>)
-    </h2>
+        <img src="<%= @wild_pokemon.pokemon.image_url %>"
+             alt="<%= @wild_pokemon.pokemon.name %>"
+             class="img-fluid mb-4 shadow rounded-4"
+             style="max-height: 250px;" />
 
-    <% if @wild_pokemon.sprite.present? %>
-      <img src="<%= @wild_pokemon.sprite %>" alt="<%= @wild_pokemon.name %>" width="200" style="border-radius: 10px; margin-bottom: 15px;" />
-    <% else %>
-      <p style="color: #888;">[No sprite available]</p>
-    <% end %>
+        <p><strong>Types:</strong></p>
+        <div>
+          <% @wild_pokemon.pokemon.types.each do |type| %>
+            <span class="badge bg-primary text-capitalize me-1 px-3 py-2 fs-6"><%= type %></span>
+          <% end %>
+        </div>
 
-    <div>
-      <%= button_to "Find Another Pokémon", capture_encounter_path, method: :post, class: "btn btn-secondary" %>
+        <div class="mt-4">
+          <%= button_to "Find Another Pokémon", capture_encounter_path, method: :post, class: "btn btn-secondary" %>
+        </div>
+      </div>
     </div>
 
+    <div class="card shadow-lg bg-dark text-light mb-4 border-0 rounded-4">
+      <div class="card-body">
+        <h4 class="mb-4 text-center text-light">Moves</h4>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+          <% @wild_pokemon.moves.each do |move| %>
+            <div class="col">
+              <div class="card h-100 shadow-sm bg-dark text-light">
+                <div class="card-body">
+                  <h5 class="card-title text-capitalize text-light">
+                    <%= move["name"].gsub("-", " ") %>
+                    <% if move["damage_class"] %>
+                      <span class="badge bg-info text-dark text-uppercase"><%= move["damage_class"] %></span>
+                    <% end %>
+                  </h5>
+                  <p class="card-text mb-1"><strong>Type:</strong> <%= move["move_type"].capitalize rescue 'N/A' %></p>
+                  <p class="card-text mb-1"><strong>Power:</strong> <%= move["power"] || 'N/A' %></p>
+                  <p class="card-text mb-1"><strong>Accuracy:</strong> <%= move["accuracy"] || 'N/A' %></p>
+                  <p class="card-text mb-1"><strong>PP:</strong> <%= move["pp"] || 'N/A' %></p>
+                  <% if move["description"] %>
+                    <p class="card-text mt-3 text-muted"><em><%= move["description"].gsub("\n", " ") %></em></p>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-
-<style>
-  .btn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 1em;
-    margin-top: 20px;
-    display: inline-block;
-    transition: background-color 0.3s ease;
-  }
-
-  .btn:hover {
-    background-color: #45a049;
-  }
-</style>
+<% else %>
+  <div class="container py-5 text-center">
+    <p class="text-danger">No wild Pokémon encountered.</p>
+  </div>
+<% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_14_130500) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_14_165400) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -25,6 +25,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_14_130500) do
     t.integer "pokeapi_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "level_learned_at"
+  end
+
+  create_table "pokemon_moves", force: :cascade do |t|
+    t.bigint "pokemon_id", null: false
+    t.bigint "move_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "level_learned_at"
+    t.index ["move_id"], name: "index_pokemon_moves_on_move_id"
+    t.index ["pokemon_id"], name: "index_pokemon_moves_on_pokemon_id"
   end
 
   create_table "pokemons", force: :cascade do |t|
@@ -40,7 +51,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_14_130500) do
     t.integer "base_experience"
     t.text "flavor_text"
     t.string "abilities"
-    t.string "moves"
     t.jsonb "sprites"
     t.integer "evolution_level"
     t.bigint "evolves_to_id"
@@ -49,6 +59,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_14_130500) do
     t.bigint "evolves_from_id"
     t.boolean "is_legendary"
     t.boolean "is_mythical"
+    t.jsonb "moves", default: []
     t.index ["evolves_from_id"], name: "index_pokemons_on_evolves_from_id"
     t.index ["evolves_to_id"], name: "index_pokemons_on_evolves_to_id"
     t.index ["pokeapi_id"], name: "index_pokemons_on_pokeapi_id"
@@ -75,6 +86,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_14_130500) do
     t.integer "sp_attack_iv"
     t.integer "sp_defense_iv"
     t.integer "speed_iv"
+    t.integer "wild_pokemon_id"
     t.index ["pokemon_id"], name: "index_user_pokemons_on_pokemon_id"
     t.index ["user_id"], name: "index_user_pokemons_on_user_id"
   end
@@ -96,12 +108,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_14_130500) do
   create_table "wild_pokemons", force: :cascade do |t|
     t.bigint "pokemon_id", null: false
     t.integer "level"
-    t.integer "hp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "moves", default: []
+    t.jsonb "stats", default: {}
+    t.integer "max_hp", null: false
+    t.integer "current_hp", null: false
+    t.boolean "captured", default: false
     t.index ["pokemon_id"], name: "index_wild_pokemons_on_pokemon_id"
   end
 
+  add_foreign_key "pokemon_moves", "moves"
+  add_foreign_key "pokemon_moves", "pokemons"
   add_foreign_key "pokemons", "pokemons", column: "evolves_from_id"
   add_foreign_key "pokemons", "pokemons", column: "evolves_to_id"
   add_foreign_key "user_pokemons", "pokemons"
