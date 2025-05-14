@@ -19,6 +19,9 @@ Rails.application.routes.draw do
   get '/starter', to: 'starters#new', as: :starter_selection
   post '/starter', to: 'starters#create'
 
+  get "/capture", to: "capture#encounter"
+  post "/capture", to: "capture#encounter", as: :capture_encounter
+
 
 
   devise_for :users

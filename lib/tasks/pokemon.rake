@@ -1,5 +1,5 @@
 namespace :pokemon do
-  desc "Atualiza os dados de evolução dos pokémons"
+  desc "Update evolution line"
   task update_evolutions: :environment do
     require 'httparty'
 
@@ -29,10 +29,12 @@ namespace :pokemon do
           evolution_method: method
         )
 
-        puts "Atualizado: #{pokemon.name} => #{next_name} (nível #{min_level || '???'}, método: #{method || '???'})"
+        target_pokemon.update!(evolves_from_id: pokemon.id)
+
+        puts "Update: #{pokemon.name} => #{next_name} (nível #{min_level || '???'}, método: #{method || '???'})"
 
       rescue => e
-        puts "Erro com #{pokemon.name}: #{e.message}"
+        puts "Error #{pokemon.name}: #{e.message}"
       end
     end
   end

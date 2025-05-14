@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_12_141320) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_14_130500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -45,6 +45,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_12_141320) do
     t.integer "evolution_level"
     t.bigint "evolves_to_id"
     t.string "evolution_method"
+    t.integer "stage"
+    t.bigint "evolves_from_id"
+    t.boolean "is_legendary"
+    t.boolean "is_mythical"
+    t.index ["evolves_from_id"], name: "index_pokemons_on_evolves_from_id"
     t.index ["evolves_to_id"], name: "index_pokemons_on_evolves_to_id"
     t.index ["pokeapi_id"], name: "index_pokemons_on_pokeapi_id"
   end
@@ -88,7 +93,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_12_141320) do
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
   end
 
+  create_table "wild_pokemons", force: :cascade do |t|
+    t.bigint "pokemon_id", null: false
+    t.integer "level"
+    t.integer "hp"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pokemon_id"], name: "index_wild_pokemons_on_pokemon_id"
+  end
+
+  add_foreign_key "pokemons", "pokemons", column: "evolves_from_id"
   add_foreign_key "pokemons", "pokemons", column: "evolves_to_id"
   add_foreign_key "user_pokemons", "pokemons"
   add_foreign_key "user_pokemons", "users"
+  add_foreign_key "wild_pokemons", "pokemons"
 end

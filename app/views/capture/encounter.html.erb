@@ -1,0 +1,39 @@
+<h1 style="text-align: center; font-size: 2em; color: #333; margin-top: 30px;">Wild Pokémon Encounter!</h1>
+
+<div style="display: flex; justify-content: center; margin-top: 30px;">
+  <div style="border: 2px solid #4CAF50; border-radius: 15px; padding: 20px; max-width: 350px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
+    
+    <h2 style="font-size: 1.5em; color: #4CAF50; margin-bottom: 10px;">
+      <%= @wild_pokemon.name.capitalize %> (Lv. <%= @wild_pokemon.level %>)
+    </h2>
+
+    <% if @wild_pokemon.sprite.present? %>
+      <img src="<%= @wild_pokemon.sprite %>" alt="<%= @wild_pokemon.name %>" width="200" style="border-radius: 10px; margin-bottom: 15px;" />
+    <% else %>
+      <p style="color: #888;">[No sprite available]</p>
+    <% end %>
+
+    <div>
+      <%= button_to "Find Another Pokémon", capture_encounter_path, method: :post, class: "btn btn-secondary" %>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1em;
+    margin-top: 20px;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn:hover {
+    background-color: #45a049;
+  }
+</style>

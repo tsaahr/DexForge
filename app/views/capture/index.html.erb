@@ -3,5 +3,5 @@
 
   <p class="mb-3">Welcome, <%= current_user.email %>! Ready to catch some Pokémon?</p>
 
-  <%= button_to "Throw Pokéball!", "#", method: :post, class: "btn btn-danger" %>
+  <%= button_to "Find Pokemon", capture_encounter_path, method: :post, class: "btn btn-danger" %>
 </div>
