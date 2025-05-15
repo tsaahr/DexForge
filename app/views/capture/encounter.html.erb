@@ -48,7 +48,6 @@
                   <p class="card-text mb-1"><strong>Type:</strong> <%= move["move_type"].capitalize rescue 'N/A' %></p>
                   <p class="card-text mb-1"><strong>Power:</strong> <%= move["power"] || 'N/A' %></p>
                   <p class="card-text mb-1"><strong>Accuracy:</strong> <%= move["accuracy"] || 'N/A' %></p>
-                  <p class="card-text mb-1"><strong>PP:</strong> <%= move["pp"] || 'N/A' %></p>
                   <% if move["description"] %>
                     <p class="card-text mt-3 text-muted"><em><%= move["description"].gsub("\n", " ") %></em></p>
                   <% end %>
