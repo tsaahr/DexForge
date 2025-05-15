@@ -10,20 +10,23 @@ class CaptureController < ApplicationController
     base_pokemon = Pokemon.where(evolves_from: nil, is_legendary: false, is_mythical: false).sample
     evolved = rand < 0.2 ? base_pokemon.auto_evolve_for_level!(wild_level) : base_pokemon
   
-    max_hp = 100 + rand(0..50)
   
     best_moves = fetch_best_moves(evolved, wild_level)
-    stats = extract_stats(evolved)
-  
+    scaled_stats = extract_scaled_stats(evolved, wild_level)
 
     @wild_pokemon = WildPokemon.create!(
       pokemon: evolved,
       level: wild_level,
-      max_hp: max_hp,
-      current_hp: max_hp,
-      moves: best_moves,
-      stats: stats
-    )
+      hp: scaled_stats["hp"],
+      current_hp: scaled_stats["hp"],
+      attack: scaled_stats["attack"],
+      defense: scaled_stats["defense"],
+      sp_attack: scaled_stats["special-attack"],
+      sp_defense: scaled_stats["special-defense"],
+      speed: scaled_stats["speed"],
+      moves: best_moves
+    )    
+    
   end
 
   def show
@@ -83,15 +86,29 @@ class CaptureController < ApplicationController
   end
   
   
+  def extract_scaled_stats(pokemon, level)
+    stats = {
+      "hp" => 0,
+      "attack" => 0,
+      "defense" => 0,
+      "special-attack" => 0,
+      "special-defense" => 0,
+      "speed" => 0
+    }
   
-  def extract_stats(pokemon)
-    stats = {}
     pokemon.stats.each do |s|
-      stat_name = s["stat"]["name"]
-      base_stat = s["base_stat"]
-      stats[stat_name] = base_stat
+      name = s["stat"]["name"]
+      base = s["base_stat"]
+  
+      if name == "hp"
+        stats["hp"] = (((2 * base) * level) / 100) + level + 10
+      else
+        stats[name] = (((2 * base) * level) / 100) + 5
+      end
     end
+  
     stats
   end
+  
   
 end

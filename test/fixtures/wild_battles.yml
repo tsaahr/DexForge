@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_pokemon: one
+  wild_pokemon: one
+  winner_type: MyString
+  winner_id: 1
+  current_turn: MyString
+  battle_log: MyText
+
+two:
+  user_pokemon: two
+  wild_pokemon: two
+  winner_type: MyString
+  winner_id: 1
+  current_turn: MyString
+  battle_log: MyText

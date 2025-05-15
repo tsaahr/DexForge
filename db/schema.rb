@@ -10,9 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_15_151803) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_15_215629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "battle_turns", force: :cascade do |t|
+    t.bigint "battle_id", null: false
+    t.integer "attacker_id"
+    t.integer "defender_id"
+    t.integer "damage"
+    t.integer "turn_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["battle_id"], name: "index_battle_turns_on_battle_id"
+  end
+
+  create_table "battles", force: :cascade do |t|
+    t.bigint "user_pokemon_1_id", null: false
+    t.bigint "user_pokemon_2_id", null: false
+    t.integer "winner_id"
+    t.integer "turn"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_pokemon_1_id"], name: "index_battles_on_user_pokemon_1_id"
+    t.index ["user_pokemon_2_id"], name: "index_battles_on_user_pokemon_2_id"
+  end
 
   create_table "moves", force: :cascade do |t|
     t.string "name"
@@ -112,6 +135,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_15_151803) do
     t.integer "sp_defense_iv"
     t.integer "speed_iv"
     t.integer "wild_pokemon_id"
+    t.jsonb "moves", default: []
     t.index ["pokemon_id"], name: "index_user_pokemons_on_pokemon_id"
     t.index ["user_id"], name: "index_user_pokemons_on_user_id"
   end
@@ -130,19 +154,45 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_15_151803) do
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
   end
 
+  create_table "wild_battles", force: :cascade do |t|
+    t.bigint "user_pokemon_id", null: false
+    t.bigint "wild_pokemon_id", null: false
+    t.string "winner_type"
+    t.integer "winner_id"
+    t.string "current_turn"
+    t.text "battle_log"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_pokemon_id"], name: "index_wild_battles_on_user_pokemon_id"
+    t.index ["wild_pokemon_id"], name: "index_wild_battles_on_wild_pokemon_id"
+  end
+
   create_table "wild_pokemons", force: :cascade do |t|
     t.bigint "pokemon_id", null: false
     t.integer "level"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "moves", default: []
-    t.jsonb "stats", default: {}
-    t.integer "max_hp", null: false
     t.integer "current_hp", null: false
     t.boolean "captured", default: false
+    t.integer "hp"
+    t.integer "attack"
+    t.integer "defense"
+    t.integer "speed"
+    t.integer "sp_attack"
+    t.integer "sp_defense"
+    t.integer "hp_iv"
+    t.integer "attack_iv"
+    t.integer "defense_iv"
+    t.integer "sp_attack_iv"
+    t.integer "sp_defense_iv"
+    t.integer "speed_iv"
     t.index ["pokemon_id"], name: "index_wild_pokemons_on_pokemon_id"
   end
 
+  add_foreign_key "battle_turns", "battles"
+  add_foreign_key "battles", "user_pokemons", column: "user_pokemon_1_id"
+  add_foreign_key "battles", "user_pokemons", column: "user_pokemon_2_id"
   add_foreign_key "pokemon_moves", "moves"
   add_foreign_key "pokemon_moves", "pokemons"
   add_foreign_key "pokemon_types", "pokemons"
@@ -153,5 +203,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_15_151803) do
   add_foreign_key "type_effectivenesses", "types", column: "defending_type_id"
   add_foreign_key "user_pokemons", "pokemons"
   add_foreign_key "user_pokemons", "users"
+  add_foreign_key "wild_battles", "user_pokemons"
+  add_foreign_key "wild_battles", "wild_pokemons"
   add_foreign_key "wild_pokemons", "pokemons"
 end
