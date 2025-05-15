@@ -1,7 +1,8 @@
 class UserPokemon < ApplicationRecord
   belongs_to :user
   belongs_to :pokemon
-  belongs_to :wild_pokemon
+  belongs_to :wild_pokemon, optional: true
+
 
   validates :level, presence: true, numericality: { greater_than: 0 }
   validates :experience, presence: true, numericality: { greater_than_or_equal_to: 0 }
@@ -74,25 +75,33 @@ class UserPokemon < ApplicationRecord
   def calculate_stats
     return unless pokemon
 
-    self.hp         = stat_formula(base_stat("hp"), level, true)
-    self.attack     = stat_formula(base_stat("attack"), level)
-    self.defense    = stat_formula(base_stat("defense"), level)
-    self.sp_attack  = stat_formula(base_stat("special-attack"), level)
-    self.sp_defense = stat_formula(base_stat("special-defense"), level)
-    self.speed      = stat_formula(base_stat("speed"), level)
+    self.hp         = stat_formula(base_stat("hp"), level, hp_iv, true)
+    self.attack     = stat_formula(base_stat("attack"), level, attack_iv)
+    self.defense    = stat_formula(base_stat("defense"), level, defense_iv)
+    self.sp_attack  = stat_formula(base_stat("special-attack"), level, sp_attack_iv)
+    self.sp_defense = stat_formula(base_stat("special-defense"), level, sp_defense_iv)
+    self.speed      = stat_formula(base_stat("speed"), level, speed_iv)
+    self.current_hp = hp
+    
   end
 
-  def stat_formula(base, level, is_hp = false)
+  def stat_formula(base, level, iv, is_hp = false)
     if is_hp
-      (((base * 2 + hp_iv) * level) / 100) + level + 10
+      (((base * 2 + iv) * level) / 100) + level + 10
     else
-      (((base * 2 + attack_iv) * level) / 100) + 5
+      (((base * 2 + iv) * level) / 100) + 5
     end
-  end
+  end  
 
   def base_stat(stat_name)
     pokemon.stats.find { |s| s["stat"]["name"] == stat_name }["base_stat"]
   end
+
+  def generate_stats!
+    calculate_stats
+    save!
+  end
+  
 
 
   private

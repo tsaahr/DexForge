@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_14_165400) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_15_133709) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,6 +26,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_14_165400) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "level_learned_at"
+    t.integer "category"
   end
 
   create_table "pokemon_moves", force: :cascade do |t|
@@ -36,6 +37,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_14_165400) do
     t.integer "level_learned_at"
     t.index ["move_id"], name: "index_pokemon_moves_on_move_id"
     t.index ["pokemon_id"], name: "index_pokemon_moves_on_pokemon_id"
+  end
+
+  create_table "pokemon_types", force: :cascade do |t|
+    t.bigint "pokemon_id", null: false
+    t.bigint "type_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pokemon_id"], name: "index_pokemon_types_on_pokemon_id"
+    t.index ["type_id"], name: "index_pokemon_types_on_type_id"
   end
 
   create_table "pokemons", force: :cascade do |t|
@@ -63,6 +73,22 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_14_165400) do
     t.index ["evolves_from_id"], name: "index_pokemons_on_evolves_from_id"
     t.index ["evolves_to_id"], name: "index_pokemons_on_evolves_to_id"
     t.index ["pokeapi_id"], name: "index_pokemons_on_pokeapi_id"
+  end
+
+  create_table "type_effectivenesses", force: :cascade do |t|
+    t.bigint "attacking_type_id", null: false
+    t.bigint "defending_type_id", null: false
+    t.float "multiplier", default: 1.0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["attacking_type_id"], name: "index_type_effectivenesses_on_attacking_type_id"
+    t.index ["defending_type_id"], name: "index_type_effectivenesses_on_defending_type_id"
+  end
+
+  create_table "types", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "user_pokemons", force: :cascade do |t|
@@ -120,8 +146,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_14_165400) do
 
   add_foreign_key "pokemon_moves", "moves"
   add_foreign_key "pokemon_moves", "pokemons"
+  add_foreign_key "pokemon_types", "pokemons"
+  add_foreign_key "pokemon_types", "types"
   add_foreign_key "pokemons", "pokemons", column: "evolves_from_id"
   add_foreign_key "pokemons", "pokemons", column: "evolves_to_id"
+  add_foreign_key "type_effectivenesses", "types", column: "attacking_type_id"
+  add_foreign_key "type_effectivenesses", "types", column: "defending_type_id"
   add_foreign_key "user_pokemons", "pokemons"
   add_foreign_key "user_pokemons", "users"
   add_foreign_key "wild_pokemons", "pokemons"

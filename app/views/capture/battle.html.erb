@@ -1,0 +1,44 @@
+<div class="container py-5">
+  <div class="card shadow-lg bg-dark text-light mb-4 border-0 rounded-4">
+    <div class="card-body text-center">
+      <h1 class="text-capitalize fw-bold display-4">
+        <%= @wild_pokemon.pokemon.name %>
+        <small class="text-muted fs-4">Lv. <%= @wild_pokemon.level %></small>
+      </h1>
+
+      <img src="<%= @wild_pokemon.pokemon.image_url %>"
+           alt="<%= @wild_pokemon.pokemon.name %>"
+           class="img-fluid mb-4 shadow rounded-4"
+           style="max-height: 250px;" />
+
+      <div class="mt-3">
+        <p><strong>HP:</strong> <%= @wild_pokemon.current_hp %> / <%= @wild_pokemon.max_hp %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-lg bg-dark text-light border-0 rounded-4">
+    <div class="card-body">
+      <h4 class="mb-4 text-center">Moves</h4>
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+        <% @wild_pokemon.moves.each do |move| %>
+          <div class="col">
+            <div class="card h-100 bg-dark text-light shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title text-capitalize">
+                  <%= move["name"]&.gsub("-", " ") || "Unknown Move" %>
+                  <% if move["damage_class"] %>
+                    <span class="badge bg-info text-dark text-uppercase"><%= move["damage_class"] %></span>
+                  <% end %>
+                </h5>
+                <p class="card-text"><strong>Power:</strong> <%= move["power"] || 'N/A' %></p>
+                <p class="card-text"><strong>Accuracy:</strong> <%= move["accuracy"] || 'N/A' %></p>
+                <p class="card-text text-muted"><em><%= move["description"]&.gsub("\n", " ") %></em></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

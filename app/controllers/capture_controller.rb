@@ -24,26 +24,34 @@ class CaptureController < ApplicationController
       moves: best_moves,
       stats: stats
     )
-  
-    if captured?
-      UserPokemon.create!(
-        user: current_user,          
-        pokemon: evolved,             
-        wild_pokemon: @wild_pokemon,  
-        level: wild_level,            
-        experience: 0                 
-      )
-    end
   end
 
   def show
     @wild_pokemon = WildPokemon.find(params[:id])
     @all_moves = fetch_best_moves_for_frontend(@wild_pokemon.pokemon)
   end
+  def battle
+    @wild_pokemon = WildPokemon.find(params[:id])
+    @all_moves = fetch_best_moves(@wild_pokemon.pokemon, @wild_pokemon.level)
+  end
+  
+  
 
-
-  def captured?
-    rand < 0.1  
+  def try_capture
+    wild_pokemon = WildPokemon.find(params[:id])
+  
+    if captured?
+      user_pokemon = UserPokemon.create!(
+        user: current_user,
+        pokemon: wild_pokemon.pokemon,
+        wild_pokemon: wild_pokemon,
+        level: wild_pokemon.level,
+        experience: 0
+      )
+      render json: { captured: true, user_pokemon_id: user_pokemon.id }
+    else
+      render json: { captured: false }
+    end
   end
   
 

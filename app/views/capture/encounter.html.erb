@@ -19,9 +19,11 @@
           <% end %>
         </div>
 
-        <div class="mt-4">
+        <div class="mt-4 d-flex justify-content-center gap-3">
           <%= button_to "Find Another Pokémon", capture_encounter_path, method: :post, class: "btn btn-secondary" %>
+          <%= button_to "Battle", capture_battle_path(@wild_pokemon), method: :post, class: "btn btn-danger" %>
         </div>
+
       </div>
     </div>
 
