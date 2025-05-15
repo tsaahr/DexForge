@@ -21,7 +21,7 @@
     <div class="container py-5">
       <div class="card shadow-lg bg-dark text-light mb-4 border-0 rounded-4">
         <div class="card-body text-center">
-          <% main_type = @pokemon.types.first %>
+          <% main_type = @pokemon.types.first.name.downcase %>
           <h1 class="text-capitalize fw-bold display-4" style="color: <%= type_color(main_type) %>;">
             <%= @pokemon.name %> <small class="text-muted fs-4">#<%= @pokemon.pokeapi_id %></small>
           </h1>
@@ -52,7 +52,11 @@
           <p><strong>Types:</strong></p>
           <div>
             <% @pokemon.types.each do |type| %>
-              <span class="badge bg-primary text-capitalize me-1 px-3 py-2 fs-6"><%= type %></span>
+              <span 
+                class="badge text-white text-capitalize me-1 px-3 py-2 fs-6" 
+                style="background-color: <%= type_color(type.name.downcase) %>;">
+                <%= type.name %>
+              </span>
             <% end %>
           </div>
         </div>

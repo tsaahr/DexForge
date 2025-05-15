@@ -7,7 +7,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       <% @user_pokemons.each do |user_pokemon| %>
         <% pokemon = user_pokemon.pokemon %>
-        <% main_type = pokemon.types.first.downcase %>
+        <% main_type = pokemon.types.first&.name&.downcase || "normal" %>
         <% color = type_color(main_type) %>
 
         <div class="bg-white/10 border border-white/20 backdrop-blur-md rounded-xl shadow-md overflow-hidden text-white flex flex-col items-center text-center transition hover:scale-105 hover:shadow-lg"
@@ -20,9 +20,9 @@
             <p class="text-sm mb-1">
               <strong>Type:</strong>
               <% pokemon.types.each do |type| %>
-                <% type_color_value = type_color(type.downcase) %>
+                <% type_color_value = type_color(type.name.downcase) %>
                 <span class="font-semibold" style="color: <%= type_color_value %>;">
-                  <%= type.capitalize %>
+                  <%= type.name.capitalize %>
                 </span><% unless type == pokemon.types.last %>, <% end %>
               <% end %>
             </p>

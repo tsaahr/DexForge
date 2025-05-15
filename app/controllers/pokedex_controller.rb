@@ -3,17 +3,18 @@ require 'json'
 
 class PokedexController < ApplicationController
   def index
-    @types = Pokemon.pluck(:types).flatten.uniq.sort
-    @pokemons = Pokemon.order(:pokeapi_id)
-
+    @types = Type.pluck(:name).sort
+    @pokemons = Pokemon.includes(:types).order(:pokeapi_id)
+  
     if params[:query].present?
       @pokemons = @pokemons.where("name ILIKE ?", "%#{params[:query]}%")
     end
-
+  
     if params[:type].present? && params[:type] != "all"
-      @pokemons = @pokemons.where("types @> ARRAY[?]::varchar[]", [params[:type]])
+      @pokemons = @pokemons.joins(:types).where(types: { name: params[:type] })
     end
   end
+  
 
   def show
     param = params[:id].to_s.strip.downcase

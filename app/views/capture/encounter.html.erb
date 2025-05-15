@@ -15,9 +15,13 @@
         <p><strong>Types:</strong></p>
         <div>
           <% @wild_pokemon.pokemon.types.each do |type| %>
-            <span class="badge bg-primary text-capitalize me-1 px-3 py-2 fs-6"><%= type %></span>
+            <% color = type_color(type.name.downcase) %>
+            <span class="badge text-capitalize me-1 px-3 py-2 fs-6" style="background-color: <%= color %>;">
+              <%= type.name.capitalize %>
+            </span>
           <% end %>
         </div>
+
 
         <div class="mt-4 d-flex justify-content-center gap-3">
           <%= button_to "Find Another Pokémon", capture_encounter_path, method: :post, class: "btn btn-secondary" %>
