@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_pokemon: one
+  status_effect: one
+  remaining_turns: 1
+
+two:
+  user_pokemon: two
+  status_effect: two
+  remaining_turns: 1

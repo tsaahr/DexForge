@@ -28,16 +28,34 @@ class CaptureController < ApplicationController
     wild_pokemon = WildPokemon.find(params[:id])
   
     if captured?
-      user_pokemon = UserPokemon.create!(
+      user_pokemon = UserPokemon.new(
         user: current_user,
         pokemon: wild_pokemon.pokemon,
         wild_pokemon: wild_pokemon,
         level: wild_pokemon.level,
-        experience: 0
+        experience: 0,
+  
+        hp_iv: wild_pokemon.hp_iv,
+        attack_iv: wild_pokemon.attack_iv,
+        defense_iv: wild_pokemon.defense_iv,
+        sp_attack_iv: wild_pokemon.sp_attack_iv,
+        sp_defense_iv: wild_pokemon.sp_defense_iv,
+        speed_iv: wild_pokemon.speed_iv,
+  
+        hp: wild_pokemon.hp,
+        current_hp: wild_pokemon.current_hp,
+        attack: wild_pokemon.attack,
+        defense: wild_pokemon.defense,
+        sp_attack: wild_pokemon.sp_attack,
+        sp_defense: wild_pokemon.sp_defense,
+        speed: wild_pokemon.speed
       )
+  
+      user_pokemon.save!
       render json: { captured: true, user_pokemon_id: user_pokemon.id }
     else
       render json: { captured: false }
     end
   end
+  
 end

@@ -2,6 +2,8 @@ class UserPokemon < ApplicationRecord
   belongs_to :user
   belongs_to :pokemon
   belongs_to :wild_pokemon, optional: true
+  has_many :pokemon_status_effects, dependent: :destroy
+  has_many :status_effects, through: :pokemon_status_effects
 
 
   validates :level, presence: true, numericality: { greater_than: 0 }

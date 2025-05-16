@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_15_215629) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_16_124745) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -33,8 +33,19 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_15_215629) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "stat_stages", default: {}
     t.index ["user_pokemon_1_id"], name: "index_battles_on_user_pokemon_1_id"
     t.index ["user_pokemon_2_id"], name: "index_battles_on_user_pokemon_2_id"
+  end
+
+  create_table "move_status_effects", force: :cascade do |t|
+    t.bigint "move_id", null: false
+    t.bigint "status_effect_id", null: false
+    t.float "chance"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["move_id"], name: "index_move_status_effects_on_move_id"
+    t.index ["status_effect_id"], name: "index_move_status_effects_on_status_effect_id"
   end
 
   create_table "moves", force: :cascade do |t|
@@ -60,6 +71,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_15_215629) do
     t.integer "level_learned_at"
     t.index ["move_id"], name: "index_pokemon_moves_on_move_id"
     t.index ["pokemon_id"], name: "index_pokemon_moves_on_pokemon_id"
+  end
+
+  create_table "pokemon_status_effects", force: :cascade do |t|
+    t.bigint "user_pokemon_id", null: false
+    t.bigint "status_effect_id", null: false
+    t.integer "remaining_turns"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status_effect_id"], name: "index_pokemon_status_effects_on_status_effect_id"
+    t.index ["user_pokemon_id"], name: "index_pokemon_status_effects_on_user_pokemon_id"
   end
 
   create_table "pokemon_types", force: :cascade do |t|
@@ -95,6 +116,24 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_15_215629) do
     t.index ["evolves_from_id"], name: "index_pokemons_on_evolves_from_id"
     t.index ["evolves_to_id"], name: "index_pokemons_on_evolves_to_id"
     t.index ["pokeapi_id"], name: "index_pokemons_on_pokeapi_id"
+  end
+
+  create_table "stat_changes", force: :cascade do |t|
+    t.bigint "move_id", null: false
+    t.string "stat_name"
+    t.integer "change"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["move_id"], name: "index_stat_changes_on_move_id"
+  end
+
+  create_table "status_effects", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.integer "duration"
+    t.string "effect_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "type_effectivenesses", force: :cascade do |t|
@@ -163,6 +202,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_15_215629) do
     t.text "battle_log"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "stat_stages", default: {}
     t.index ["user_pokemon_id"], name: "index_wild_battles_on_user_pokemon_id"
     t.index ["wild_pokemon_id"], name: "index_wild_battles_on_wild_pokemon_id"
   end
@@ -193,12 +233,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_15_215629) do
   add_foreign_key "battle_turns", "battles"
   add_foreign_key "battles", "user_pokemons", column: "user_pokemon_1_id"
   add_foreign_key "battles", "user_pokemons", column: "user_pokemon_2_id"
+  add_foreign_key "move_status_effects", "moves"
+  add_foreign_key "move_status_effects", "status_effects"
   add_foreign_key "pokemon_moves", "moves"
   add_foreign_key "pokemon_moves", "pokemons"
+  add_foreign_key "pokemon_status_effects", "status_effects"
+  add_foreign_key "pokemon_status_effects", "user_pokemons"
   add_foreign_key "pokemon_types", "pokemons"
   add_foreign_key "pokemon_types", "types"
   add_foreign_key "pokemons", "pokemons", column: "evolves_from_id"
   add_foreign_key "pokemons", "pokemons", column: "evolves_to_id"
+  add_foreign_key "stat_changes", "moves"
   add_foreign_key "type_effectivenesses", "types", column: "attacking_type_id"
   add_foreign_key "type_effectivenesses", "types", column: "defending_type_id"
   add_foreign_key "user_pokemons", "pokemons"
