@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_16_124745) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_16_130006) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -231,6 +231,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_16_124745) do
   end
 
   add_foreign_key "battle_turns", "battles"
+  add_foreign_key "battle_turns", "user_pokemons", column: "attacker_id"
+  add_foreign_key "battle_turns", "user_pokemons", column: "defender_id"
   add_foreign_key "battles", "user_pokemons", column: "user_pokemon_1_id"
   add_foreign_key "battles", "user_pokemons", column: "user_pokemon_2_id"
   add_foreign_key "move_status_effects", "moves"

@@ -42,37 +42,27 @@ class UserPokemon < ApplicationRecord
     50 + (level * 10)
   end
   
-
-  def pokemon_api_data
-    @pokemon_api_data ||= begin
-      response = HTTParty.get("https://pokeapi.co/api/v2/pokemon/#{pokemon.pokeapi_id}")
-      response.success? ? JSON.parse(response.body) : nil
-    end
+  def select_best_moves
+    moves_for_level.first(4)
   end
-
-  def available_moves
-    return [] unless pokemon_api_data
-
-    pokemon_api_data["moves"]
-      .select do |move|
-        move["version_group_details"].any? do |detail|
-          detail["move_learn_method"]["name"] == "level-up" &&
-          detail["level_learned_at"] <= level &&
-          detail["level_learned_at"] > 0
-        end
-      end
-      .uniq { |m| m["move"]["name"] }
-      .map do |move|
-        move_data = Move.find_by(name: move["move"]["name"])
-        {
-          name: move["move"]["name"],
-          power: move_data&.power,
-          description: move_data&.description
-        }
-      end
+  
+  def moves_for_level
+    pokemon.pokemon_moves.includes(:move).select do |pm|
+      pm.level_learned_at.nil? || pm.level_learned_at <= level
+    end.map do |pm|
+      move = pm.move
+      {
+        name: move.name,
+        power: move.power,
+        accuracy: move.accuracy,
+        pp: move.pp,
+        move_type: move.move_type,
+        damage_class: move.damage_class,
+        description: move.description
+      }
+    end.sort_by { |m| -(m[:power] || 0) }
   end
-
-  IV = 15
+  
 
   def calculate_stats
     return unless pokemon
@@ -99,12 +89,21 @@ class UserPokemon < ApplicationRecord
     pokemon.stats.find { |s| s["stat"]["name"] == stat_name }["base_stat"]
   end
 
+
+  def self.build_with_best_moves(user:, pokemon:, level:)
+    user_pokemon = new(user: user, pokemon: pokemon, level: level, experience: 0)
+    user_pokemon.assign_random_ivs
+    user_pokemon.calculate_stats
+    user_pokemon.moves = user_pokemon.select_best_moves
+    user_pokemon.current_hp = user_pokemon.hp
+    user_pokemon
+  end
+  
+
   def generate_stats!
     calculate_stats
     save!
   end
-  
-
 
   private
 
