@@ -11,6 +11,8 @@ class UserPokemon < ApplicationRecord
 
   before_create :assign_random_ivs
   before_save :check_evolution!
+  before_create :calculate_stats
+
 
   def assign_random_ivs
     self.hp_iv = rand(0..100)

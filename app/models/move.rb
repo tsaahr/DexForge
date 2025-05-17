@@ -6,4 +6,13 @@ class Move < ApplicationRecord
   has_many :stat_changes, dependent: :destroy
   has_many :move_status_effects, dependent: :destroy
   has_many :status_effects, through: :move_status_effects
+
+  def physical?
+    damage_class == 'physical'
+  end
+
+  def special?
+    damage_class == 'special'
+  end
+
 end

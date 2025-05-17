@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_16_130006) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_17_122600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -61,6 +61,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_16_130006) do
     t.datetime "updated_at", null: false
     t.integer "level_learned_at"
     t.integer "category"
+    t.bigint "type_id"
+    t.index ["type_id"], name: "index_moves_on_type_id"
   end
 
   create_table "pokemon_moves", force: :cascade do |t|
@@ -237,6 +239,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_16_130006) do
   add_foreign_key "battles", "user_pokemons", column: "user_pokemon_2_id"
   add_foreign_key "move_status_effects", "moves"
   add_foreign_key "move_status_effects", "status_effects"
+  add_foreign_key "moves", "types"
   add_foreign_key "pokemon_moves", "moves"
   add_foreign_key "pokemon_moves", "pokemons"
   add_foreign_key "pokemon_status_effects", "status_effects"
