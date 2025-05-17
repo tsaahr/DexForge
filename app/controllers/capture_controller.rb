@@ -13,6 +13,39 @@ class CaptureController < ApplicationController
     @wild_pokemon = WildPokemon.build_with_best_moves(pokemon: evolved, level: wild_level)
     @wild_pokemon.save!
   end
+
+  def start_battle
+    @wild_pokemon = WildPokemon.find(params[:id])
+    @user_pokemon = current_user.user_pokemons.first
+  
+    @wild_battle = WildBattle.create!(
+      user_pokemon: @user_pokemon,
+      wild_pokemon: @wild_pokemon
+    )
+  
+    redirect_to wild_battle_path(@wild_battle)
+  end  
+
+  def next_turn_battle
+    @wild_battle = WildBattle.find(params[:id])
+  
+    user_pokemon = @wild_battle.user_pokemon
+    wild_pokemon = @wild_battle.wild_pokemon
+  
+    attacker_move = user_pokemon.moves.sample
+    defender_move = wild_pokemon.moves.sample
+  
+    BattleEngine.new(
+      @wild_battle,
+      attacker_move: attacker_move,
+      defender_move: defender_move,
+      attacker: user_pokemon,
+      defender: wild_pokemon
+    ).execute_turn!
+  
+    redirect_to capture_battle_path(wild_pokemon)
+  end
+  
   
   
   def show
@@ -21,8 +54,21 @@ class CaptureController < ApplicationController
   end
   def battle
     @wild_pokemon = WildPokemon.find(params[:id])
-    @all_moves = @wild_pokemon.all_possible_moves
+    @user_pokemon = current_user.user_pokemons.last
+  
+    @wild_battle = WildBattle.find_or_create_by!(
+      user_pokemon: @user_pokemon,
+      wild_pokemon: @wild_pokemon
+    ) do |battle|
+      battle.current_turn = "user"
+      battle.stat_stages = {
+        @user_pokemon.id.to_s => battle.base_stage_hash,
+        @wild_pokemon.id.to_s => battle.base_stage_hash
+
+      }
+    end
   end
+  
   
   def try_capture
     wild_pokemon = WildPokemon.find(params[:id])

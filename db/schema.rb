@@ -10,19 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_17_122600) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_17_193532) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "battle_turns", force: :cascade do |t|
-    t.bigint "battle_id", null: false
-    t.integer "attacker_id"
-    t.integer "defender_id"
     t.integer "damage"
     t.integer "turn_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["battle_id"], name: "index_battle_turns_on_battle_id"
+    t.bigint "wild_battle_id"
+    t.string "attacker_type"
+    t.bigint "attacker_id"
+    t.string "defender_type"
+    t.bigint "defender_id"
+    t.string "battleable_type", null: false
+    t.bigint "battleable_id", null: false
+    t.index ["attacker_type", "attacker_id"], name: "index_battle_turns_on_attacker"
+    t.index ["battleable_type", "battleable_id"], name: "index_battle_turns_on_battleable"
+    t.index ["defender_type", "defender_id"], name: "index_battle_turns_on_defender"
+    t.index ["wild_battle_id"], name: "index_battle_turns_on_wild_battle_id"
   end
 
   create_table "battles", force: :cascade do |t|
@@ -205,6 +212,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_17_122600) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "stat_stages", default: {}
+    t.string "status"
+    t.integer "turn"
     t.index ["user_pokemon_id"], name: "index_wild_battles_on_user_pokemon_id"
     t.index ["wild_pokemon_id"], name: "index_wild_battles_on_wild_pokemon_id"
   end
@@ -232,9 +241,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_17_122600) do
     t.index ["pokemon_id"], name: "index_wild_pokemons_on_pokemon_id"
   end
 
-  add_foreign_key "battle_turns", "battles"
-  add_foreign_key "battle_turns", "user_pokemons", column: "attacker_id"
-  add_foreign_key "battle_turns", "user_pokemons", column: "defender_id"
+  add_foreign_key "battle_turns", "wild_battles"
   add_foreign_key "battles", "user_pokemons", column: "user_pokemon_1_id"
   add_foreign_key "battles", "user_pokemons", column: "user_pokemon_2_id"
   add_foreign_key "move_status_effects", "moves"

@@ -22,9 +22,10 @@ Rails.application.routes.draw do
   get "/capture", to: "capture#encounter"
   post "/capture", to: "capture#encounter", as: :capture_encounter
 
+  get '/capture/:id/battle', to: 'capture#battle'
   post '/capture/:id/battle', to: 'capture#battle', as: 'capture_battle'
-
-
+  post '/capture/:id/battle/next_turn', to: 'capture#next_turn_battle', as: 'next_turn_capture_battle'
+  
 
 
   devise_for :users

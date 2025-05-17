@@ -13,6 +13,9 @@ class UserPokemon < ApplicationRecord
   before_save :check_evolution!
   before_create :calculate_stats
 
+  def name_or_nickname
+    nickname.present? ? nickname : pokemon.name
+  end
 
   def assign_random_ivs
     self.hp_iv = rand(0..100)
