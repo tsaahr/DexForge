@@ -43,6 +43,10 @@
                             <li class="small"><%= move["name"].humanize %></li>
                           <% end %>
                         </ul>
+                        <%= button_to "Select", select_my_pokemon_path(user_pokemon), method: :patch, class: "btn btn-sm btn-outline-light mt-2" unless user_pokemon.selected? %>
+                        <% if user_pokemon.selected? %>
+                          <span class="badge bg-success mt-2">Selected</span>
+                        <% end %>
                       </div>
                     <% end %>
                   </div>

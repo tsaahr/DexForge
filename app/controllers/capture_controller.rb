@@ -54,7 +54,7 @@ class CaptureController < ApplicationController
   end
   def battle
     @wild_pokemon = WildPokemon.find(params[:id])
-    @user_pokemon = current_user.user_pokemons.last
+    @user_pokemon = current_user.user_pokemons.find_by(selected: true)
   
     @wild_battle = WildBattle.find_or_create_by!(
       user_pokemon: @user_pokemon,

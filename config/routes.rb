@@ -15,6 +15,12 @@ Rails.application.routes.draw do
   get 'capture', to: 'capture#index'
 
   get "my_pokemons", to: "my_pokemons#index"
+  resources :my_pokemons, only: [:index, :destroy] do
+    member do
+      patch :select
+    end
+  end
+  
 
   get '/starter', to: 'starters#new', as: :starter_selection
   post '/starter', to: 'starters#create'

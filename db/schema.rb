@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_18_150721) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_18_152522) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -194,6 +194,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_18_150721) do
     t.integer "speed_iv"
     t.integer "wild_pokemon_id"
     t.jsonb "moves", default: []
+    t.boolean "selected"
     t.index ["pokemon_id"], name: "index_user_pokemons_on_pokemon_id"
     t.index ["user_id"], name: "index_user_pokemons_on_user_id"
   end

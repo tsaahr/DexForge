@@ -11,6 +11,19 @@ class MyPokemonsController < ApplicationController
       end
     end
   end
+
+  def select
+    @user_pokemon = current_user.user_pokemons.find(params[:id])
+
+    current_user.user_pokemons.update_all(selected: false)
+
+    if @user_pokemon.update(selected: true)
+      redirect_to my_pokemons_path, notice: "#{@user_pokemon.pokemon.name.capitalize} was selected!"
+    else
+      redirect_to my_pokemons_path, alert: "Failed to select Pokémon."
+    end
+  end
+  
   
 
   def destroy

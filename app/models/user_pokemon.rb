@@ -13,6 +13,10 @@ class UserPokemon < ApplicationRecord
   before_save :check_evolution!
   before_create :calculate_stats
 
+  def ensure_only_one_selected
+    UserPokemon.where(user_id: self.user_id).update_all(selected: false)
+  end
+
   def name_or_nickname
     nickname.present? ? nickname : pokemon.name
   end
