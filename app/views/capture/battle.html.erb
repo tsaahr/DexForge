@@ -13,10 +13,20 @@
       <img src="<%= @wild_pokemon.pokemon.image_url %>" style="max-height: 200px;">
     </div>
   </div>
-
   <hr>
 
-  <pre><%= @wild_battle.battle_log %></pre>
+ <% if @battle_logs.present? %>
+    <div class="card mb-4">
+      <div class="card-body">
+        <h4 class="card-title text-center mb-3">Battle Log</h4>
+        <pre class="bg-light p-3 rounded">
+  <% @battle_logs.each do |log| %>
+  Turno <%= log.turn %>: <%= log.message %>
+  <% end %>
+        </pre>
+      </div>
+    </div>
+  <% end %>
 
   <% unless @wild_battle.finished? %>
     <%= button_to "Próximo Turno", next_turn_capture_battle_path(@wild_battle), method: :post, class: "btn btn-primary" %>

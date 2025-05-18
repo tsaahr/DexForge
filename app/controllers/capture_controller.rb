@@ -67,6 +67,8 @@ class CaptureController < ApplicationController
 
       }
     end
+
+    @battle_logs = @wild_battle.battle_logs.order(:turn)
   end
   
   

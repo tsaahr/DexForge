@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  message: MyText
+  turn: 1
+  battle: one
+  battle_type: Battle
+
+two:
+  message: MyText
+  turn: 1
+  battle: two
+  battle_type: Battle

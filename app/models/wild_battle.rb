@@ -3,6 +3,9 @@ class WildBattle < ApplicationRecord
   belongs_to :wild_pokemon
   belongs_to :winner, polymorphic: true, optional: true
   has_many :battle_turns, dependent: :destroy
+  has_many :battle_logs, as: :battle, dependent: :destroy
+  has_many :battle_logs, as: :battleable
+
 
   enum status: {
     pending: 'pending',

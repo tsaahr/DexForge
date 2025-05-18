@@ -9,19 +9,22 @@ class BattleEngine
 
   def execute_turn!
     return if @battle.finished?
-
+  
+    turn_number = @battle.battle_turns.maximum(:turn_number).to_i + 1
+  
     first, second = decide_turn_order
-
+  
     first_move = move_for(first)
     second_move = move_for(second)
-
-    process_attack(attacker: first, defender: second, move: first_move)
+  
+    process_attack(attacker: first, defender: second, move: first_move, turn_number: turn_number)
     return if @battle.finished?
-
-    process_attack(attacker: second, defender: first, move: second_move)
-
+  
+    process_attack(attacker: second, defender: first, move: second_move, turn_number: turn_number)
+  
     @battle.increment!(:turn) unless @battle.finished?
   end
+  
 
   private
 
@@ -51,23 +54,21 @@ class BattleEngine
     pokemon == pokemon_1 ? @attacker_move : @defender_move
   end  
 
-  def process_attack(attacker:, defender:, move:)
+  def process_attack(attacker:, defender:, move:, turn_number:)
     attacker.reload
     defender.reload
-
+  
     if accuracy_check?(attacker, defender, move)
       apply_stat_changes!(move, attacker, defender)
       damage = calculate_damage(attacker, defender, move)
     else
       damage = 0
     end
-
+  
     defender.current_hp -= damage
     defender.current_hp = 0 if defender.current_hp < 0
     defender.save!
-
-    turn_number = @battle.battle_turns.order(turn_number: :desc).first&.turn_number.to_i + 1
-
+  
     @battle_turn = BattleTurn.create!(
       battleable: @battle,
       attacker: attacker,
@@ -75,13 +76,22 @@ class BattleEngine
       damage: damage,
       turn_number: turn_number
     )
-    
-    
 
+    @logger ||= BattleLogger.new(@battle)
+    @logger.log_attack(
+      attacker: attacker,
+      move: move,
+      defender: defender,
+      damage: damage,
+      turn: turn_number
+    )
+
+  
     if defender.current_hp <= 0
       @battle.update!(status: :finished, winner: attacker)
     end
   end
+  
 
   def apply_stat_changes!(move, attacker, defender)
     return unless move["damage_class"] == "status"

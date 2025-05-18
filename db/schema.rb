@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_17_193532) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_18_150721) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "battle_logs", force: :cascade do |t|
+    t.text "message"
+    t.integer "turn"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "battleable_type", null: false
+    t.bigint "battleable_id", null: false
+    t.index ["battleable_type", "battleable_id"], name: "index_battle_logs_on_battleable"
+  end
 
   create_table "battle_turns", force: :cascade do |t|
     t.integer "damage"
