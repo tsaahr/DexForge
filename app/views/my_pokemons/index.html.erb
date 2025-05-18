@@ -9,51 +9,69 @@
         <% color = type_color(main_type) %>
 
         <div class="col-md-6 col-lg-4">
-          <a href="#" class="text-decoration-none text-white">
-            <div class="card bg-dark bg-opacity-75 border-2 shadow-sm transition-all h-100" style="border-color: <%= color %>; transition: transform 0.2s;">
-              <div class="row g-0 h-100 hover-zoom">
-                <div class="col-4 d-flex align-items-center p-2">
-                  <img src="<%= pokemon.image_url %>" alt="<%= pokemon.name %>" class="img-fluid rounded-start">
-                </div>
-                <div class="col-8">
-                  <div class="card-body py-3 d-flex flex-column justify-content-between h-100">
-                    <div>
-                      <h5 class="card-title fw-bold mb-1" style="color: <%= color %>;">
-                        <%= pokemon.name.capitalize %>
-                        <% if user_pokemon.nickname.present? %>
-                          <small class="text-muted">(<%= user_pokemon.nickname %>)</small>
-                        <% end %>
-                      </h5>
-                      <p class="mb-2">
-                        <strong>Type:</strong>
-                        <% pokemon.types.each do |type| %>
-                          <% type_color_value = type_color(type.name.downcase) %>
-                          <span class="badge me-1" style="background-color: <%= type_color_value %>;">
-                            <%= type.name.capitalize %>
-                          </span>
-                        <% end %>
-                      </p>
-                    </div>
+          <div class="card h-100 bg-dark bg-opacity-75 border-2 shadow-sm transition-all px-3 py-4 d-flex flex-column justify-content-between" style="border-color: <%= color %>;">
+            <div class="row g-3 h-100">
+              <!-- LEFT -->
+              <div class="col-4 d-flex flex-column align-items-center justify-content-start">
+                <img src="<%= pokemon.image_url %>" alt="<%= pokemon.name %>" class="img-fluid mb-3" style="max-height: 100px;">
+                <p class="mb-1 small text-white"><strong>Level:</strong> <%= user_pokemon.level || 1 %></p>
+                <p class="mb-1 small text-white"><strong>HP:</strong> <%= user_pokemon.current_hp || 0 %> / <%= user_pokemon.hp || 0 %></p>
+              </div>
 
-                    <% if user_pokemon.moves.present? %>
-                      <div>
-                        <p class="mb-1"><strong>Moves:</strong></p>
-                        <ul class="list-unstyled mb-0">
-                          <% user_pokemon.moves.first(4).each do |move| %>
-                            <li class="small"><%= move["name"].humanize %></li>
-                          <% end %>
-                        </ul>
-                        <%= button_to "Select", select_my_pokemon_path(user_pokemon), method: :patch, class: "btn btn-sm btn-outline-light mt-2" unless user_pokemon.selected? %>
-                        <% if user_pokemon.selected? %>
-                          <span class="badge bg-success mt-2">Selected</span>
-                        <% end %>
-                      </div>
+              <!-- RIGHT -->
+              <div class="col-8 d-flex flex-column justify-content-between">
+                <div>
+                  <h5 class="card-title fw-bold mb-2" style="color: <%= color %>;">
+                    <%= pokemon.name.capitalize %>
+                    <% if user_pokemon.nickname.present? %>
+                      <small class="text-muted">(<%= user_pokemon.nickname %>)</small>
                     <% end %>
-                  </div>
+                  </h5>
+
+<p class="mb-2" style="color: #f8f9fa; font-weight: 500;">
+  <i class="bi bi-bookmark-star-fill me-1"></i>
+  Type:
+</p>
+<div class="d-flex gap-1 mb-3">
+  <% pokemon.types.each do |type| %>
+    <% type_color_value = type_color(type.name.downcase) %>
+    <span class="badge px-2 py-1" style="background-color: <%= type_color_value %>; font-weight: 500;">
+      <%= type.name.capitalize %>
+    </span>
+  <% end %>
+</div>
+
+<% if user_pokemon.moves.present? %>
+  <p class="mb-2" style="color: #f8f9fa; font-weight: 500;">
+    <i class="bi bi-lightning-fill me-1"></i>
+    Moves:
+  </p>
+  <div class="d-grid gap-1 mb-2">
+    <% user_pokemon.moves.first(4).each do |move| %>
+      <% move_type = move["move_type"]&.downcase || "normal" %>
+      <% move_color = type_color(move_type) %>
+      <span class="badge text-start px-2 py-2" style="background-color: <%= move_color %>; color: #000; font-weight: 500; width: 100%;">
+        <%= move["name"].humanize %>
+      </span>
+    <% end %>
+  </div>
+<% end %>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex gap-2 mt-2">
+                  <% if user_pokemon.selected? %>
+                    <span class="badge bg-success align-self-center">Selected</span>
+                  <% else %>
+                    <%= button_to "Select", select_my_pokemon_path(user_pokemon), method: :patch, class: "btn btn-sm btn-outline-light" %>
+                  <% end %>
+
+                  <a href="#" class="btn btn-sm btn-outline-warning">Details</a>
                 </div>
               </div>
             </div>
-          </a>
+          </div>
         </div>
       <% end %>
     </div>
@@ -70,7 +88,7 @@
   }
 
   .card:hover {
-    transform: scale(1.02);
+    transform: scale(1.05);
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
     cursor: pointer;
   }
@@ -81,5 +99,13 @@
 
   .hover-zoom:hover {
     transform: scale(1.01);
+  }
+
+  .flex-wrap-nowrap {
+    flex-wrap: nowrap !important;
+  }
+
+  .card-body {
+    padding: 0 !important;
   }
 </style>
