@@ -26,6 +26,10 @@ class CaptureController < ApplicationController
     redirect_to wild_battle_path(@wild_battle)
   end  
 
+  def started?
+    battle_logs.exists?
+  end
+
   def next_turn_battle
     @wild_battle = WildBattle.find(params[:id])
   
@@ -44,6 +48,51 @@ class CaptureController < ApplicationController
     ).execute_turn!
   
     redirect_to capture_battle_path(wild_pokemon)
+  end
+  
+
+  def throw_pokeball
+    battle = WildBattle.find(params[:id])
+  
+    unless battle.started?
+      return render json: { error: "Battle not started" }, status: :unprocessable_entity
+    end
+  
+    if battle.finished?
+      return render json: { error: "Battle already finished" }, status: :unprocessable_entity
+    end
+  
+    chance = battle.capture_chance / 100.0
+    success = rand < chance
+
+    if success
+      current_user.user_pokemons.create!(
+        pokemon: battle.wild_pokemon.pokemon,
+        wild_pokemon: battle.wild_pokemon,
+        level: battle.wild_pokemon.level,
+        experience: 0,
+    
+        hp_iv: battle.wild_pokemon.hp_iv,
+        attack_iv: battle.wild_pokemon.attack_iv,
+        defense_iv: battle.wild_pokemon.defense_iv,
+        sp_attack_iv: battle.wild_pokemon.sp_attack_iv,
+        sp_defense_iv: battle.wild_pokemon.sp_defense_iv,
+        speed_iv: battle.wild_pokemon.speed_iv,
+    
+        hp: battle.wild_pokemon.hp,
+        current_hp: battle.wild_pokemon.current_hp,
+        attack: battle.wild_pokemon.attack,
+        defense: battle.wild_pokemon.defense,
+        sp_attack: battle.wild_pokemon.sp_attack,
+        sp_defense: battle.wild_pokemon.sp_defense,
+        speed: battle.wild_pokemon.speed
+      )
+      battle.update!(status: :finished, winner: current_user)
+      render json: { captured: true }
+    else
+      battle.update!(status: :finished)
+      render json: { captured: false }
+    end
   end
   
   
@@ -69,41 +118,6 @@ class CaptureController < ApplicationController
     end
 
     @battle_logs = @wild_battle.battle_logs.order(:turn)
-  end
-  
-  
-  def try_capture
-    wild_pokemon = WildPokemon.find(params[:id])
-  
-    if captured?
-      user_pokemon = UserPokemon.new(
-        user: current_user,
-        pokemon: wild_pokemon.pokemon,
-        wild_pokemon: wild_pokemon,
-        level: wild_pokemon.level,
-        experience: 0,
-  
-        hp_iv: wild_pokemon.hp_iv,
-        attack_iv: wild_pokemon.attack_iv,
-        defense_iv: wild_pokemon.defense_iv,
-        sp_attack_iv: wild_pokemon.sp_attack_iv,
-        sp_defense_iv: wild_pokemon.sp_defense_iv,
-        speed_iv: wild_pokemon.speed_iv,
-  
-        hp: wild_pokemon.hp,
-        current_hp: wild_pokemon.current_hp,
-        attack: wild_pokemon.attack,
-        defense: wild_pokemon.defense,
-        sp_attack: wild_pokemon.sp_attack,
-        sp_defense: wild_pokemon.sp_defense,
-        speed: wild_pokemon.speed
-      )
-  
-      user_pokemon.save!
-      render json: { captured: true, user_pokemon_id: user_pokemon.id }
-    else
-      render json: { captured: false }
-    end
   end
   
 end

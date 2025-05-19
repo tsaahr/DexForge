@@ -5,6 +5,8 @@ class UserPokemon < ApplicationRecord
   has_many :pokemon_status_effects, dependent: :destroy
   has_many :status_effects, through: :pokemon_status_effects
   has_one :healing_session, dependent: :destroy
+  has_many :wild_battles, dependent: :nullify
+
 
 
   validates :level, presence: true, numericality: { greater_than: 0 }

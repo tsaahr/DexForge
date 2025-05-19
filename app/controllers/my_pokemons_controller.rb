@@ -27,8 +27,11 @@ class MyPokemonsController < ApplicationController
   
 
   def destroy
-    @pokemon = current_user.pokemons.find(params[:id])
-    @pokemon.destroy
+    @user_pokemon = current_user.user_pokemons.find(params[:id])
+    Battle.where("user_pokemon_1_id = ? OR user_pokemon_2_id = ?", @user_pokemon.id, @user_pokemon.id).destroy_all
+    WildBattle.where(user_pokemon_id: @user_pokemon.id).destroy_all
+    @user_pokemon.destroy
     redirect_to my_pokemons_path, notice: "Pokémon released successfully."
   end
+  
 end

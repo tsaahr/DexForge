@@ -2,9 +2,8 @@ class Battle < ApplicationRecord
   belongs_to :user_pokemon_1, class_name: "UserPokemon"
   belongs_to :user_pokemon_2, class_name: "UserPokemon"
   belongs_to :winner, class_name: 'UserPokemon', optional: true
-  has_many :battle_logs, as: :battle, dependent: :destroy
-
-  has_many :battle_turns, dependent: :destroy
+  has_many :battle_logs, as: :battleable, dependent: :destroy
+  has_many :battle_turns, as: :battleable, dependent: :destroy
 
   enum status: {
     pending: 'pending',

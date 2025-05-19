@@ -32,6 +32,8 @@ Rails.application.routes.draw do
   get '/capture/:id/battle', to: 'capture#battle'
   post '/capture/:id/battle', to: 'capture#battle', as: 'capture_battle'
   post '/capture/:id/battle/next_turn', to: 'capture#next_turn_battle', as: 'next_turn_capture_battle'
+  post '/capture/:id/battle/throw_pokeball', to: 'capture#throw_pokeball', as: 'throw_pokeball_capture_battle'
+  
 
   get "/healing_center", to: "healing_center#index"
   post "/healing_center", to: "healing_center#create"

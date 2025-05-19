@@ -179,9 +179,9 @@ class BattleEngine
     acc_stage = @battle.stat_stage(attacker, "accuracy")
     eva_stage = @battle.stat_stage(defender, "evasion")
 
-    final_accuracy = move["accuracy"] * (1 + acc_stage * 0.1 - eva_stage * 0.1) || 100
-    final_accuracy = final_accuracy.clamp(1, 100) || 100
-    rand(100) < final_accuracy
+    accuracy = move["accuracy"] || 100
+    final_accuracy = accuracy * (1 + acc_stage * 0.1 - eva_stage * 0.1)
+    final_accuracy = final_accuracy.clamp(1, 100)    
   end
 
   def move_targets_self?(move)

@@ -2,12 +2,8 @@ class WildBattle < ApplicationRecord
   belongs_to :user_pokemon
   belongs_to :wild_pokemon
   belongs_to :winner, polymorphic: true, optional: true
-  has_many :battle_turns, dependent: :destroy
-  has_many :battle_logs, as: :battle, dependent: :destroy
-  has_many :battle_logs, as: :battleable
-  has_many :wild_battles, dependent: :destroy
-
-
+  has_many :battle_turns, as: :battleable, dependent: :destroy
+  has_many :battle_logs, as: :battleable, dependent: :destroy
 
   enum status: {
     pending: 'pending',
@@ -16,6 +12,11 @@ class WildBattle < ApplicationRecord
   }
 
   after_create :start_battle!
+
+  def started?
+    !pending?
+  end
+  
 
   def start_battle!
     update!(
@@ -28,6 +29,26 @@ class WildBattle < ApplicationRecord
     initialize_current_hp(user_pokemon)
     initialize_current_hp(wild_pokemon)
     save_both
+  end
+
+  def capture_chance
+    chance = 1.2
+  
+    hp_ratio = wild_pokemon.current_hp.to_f / wild_pokemon.hp.to_f
+    chance -= hp_ratio * 0.7
+  
+    chance -= (wild_pokemon.level * 0.01)
+  
+    if wild_pokemon.pokemon.is_legendary?
+      chance -= 0.2
+    elsif wild_pokemon.pokemon.is_mythical?
+      chance -= 0.3
+    end
+  
+    chance = 0.95 if chance > 0.95
+    chance = 0.05 if chance < 0.05
+  
+    (chance * 100).round(1)
   end
 
   def execute_turn!

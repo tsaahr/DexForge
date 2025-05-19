@@ -2,7 +2,7 @@
   <h2 class="text-center mb-4 text-light">Wild Battle</h2>
 
   <div class="row">
-    <!-- Card do Pokémon do Usuário -->
+    <!-- User Pokémon Card -->
     <div class="col-md-6 mb-3">
       <div class="card bg-dark text-light shadow rounded-3 text-center">
         <div class="card-body">
@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <!-- Card do Pokémon Selvagem -->
+    <!-- Wild Pokémon Card -->
     <div class="col-md-6 mb-3">
       <div class="card bg-dark text-light shadow rounded-3 text-center">
         <div class="card-body">
@@ -34,31 +34,88 @@
       </div>
     </div>
   </div>
+
   <hr>
 
- <% if @battle_logs.present? %>
-  <div class="card mb-4">
-    <div class="card-body">
-      <h4 class="card-title text-center mb-3">Battle Log</h4>
-      <div class="battle-log bg-light p-3 rounded" style="max-height: 300px; overflow-y: auto; font-family: monospace;">
-      <% @battle_logs.order(:turn).each do |log| %>
-        <div class="battle-log-entry mb-2 p-2 border rounded bg-white shadow-sm">
-          <div>
-            <span class="badge bg-dark me-2">Turn <%= log.turn %></span>
-            <span><%= log.message %></span>
-          </div>
+  <% if @battle_logs.present? %>
+    <div class="card mb-4">
+      <div class="card-body">
+        <h4 class="card-title text-center mb-3">Battle Log</h4>
+        <div class="battle-log bg-light p-3 rounded" style="max-height: 300px; overflow-y: auto; font-family: monospace;">
+          <% @battle_logs.order(:turn).each do |log| %>
+            <div class="battle-log-entry mb-2 p-2 border rounded bg-white shadow-sm">
+              <div>
+                <span class="badge bg-dark me-2">Turn <%= log.turn %></span>
+                <span><%= log.message %></span>
+              </div>
+            </div>
+          <% end %>
         </div>
-      <% end %>
       </div>
     </div>
-  </div>
   <% end %>
 
-  <% unless @wild_battle.finished? %>
-    <%= button_to "Próximo Turno", next_turn_capture_battle_path(@wild_battle), method: :post, class: "btn btn-primary" %>
-  <% else %>
-    <div class="alert alert-success mt-4 text-center">
-      <strong><%= @wild_battle.winner.name_or_nickname %></strong> venceu a batalha!
+<% if !@wild_battle.started? %>
+  <div class="text-center mt-4">
+    <%= button_to "Start Battle", start_battle_capture_battle_path(@wild_battle), method: :post, class: "btn btn-warning" %>
+  </div>
+
+<% elsif !@wild_battle.finished? %>
+  <div class="d-flex justify-content-center gap-3 mt-4">
+    <%= button_to "Attack", next_turn_capture_battle_path(@wild_battle), method: :post, class: "btn btn-primary" %>
+    <button id="throw-pokeball-btn" class="btn btn-danger">Throw Pokéball</button>
+    <% chance = @wild_battle.capture_chance %>
+    <div class="mt-2 px-3 py-2 rounded" style="background-color: #1e1e1e; border: 1px solid #444;">
+      <p class="mb-0 text-light text-center">
+        Capture Chance:
+        <strong style="color: <%= chance < 20 ? '#dc3545' : chance < 50 ? '#ffc107' : '#28a745' %>;">
+          <%= chance %>%
+        </strong>
+      </p>
     </div>
-  <% end %>
+  </div>
+
+<% else %>
+  <div class="alert alert-info mt-4 text-center">
+    Battle is over.
+  </div>
+<% end %>
+
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("throw-pokeball-btn");
+    if (btn) {
+      btn.addEventListener("click", async () => {
+        try {
+          const response = await fetch("<%= throw_pokeball_capture_battle_path(@wild_battle) %>", {
+            method: "POST",
+            headers: {
+              "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content,
+              "Content-Type": "application/json"
+            }
+          });
+
+          console.log('Response status:', response.status);
+
+          const data = await response.json();
+
+          console.log('Response data:', data);
+
+          if (data.captured) {
+            alert("You captured the Pokémon!");
+          } else {
+            alert("The Pokémon ran away!");
+          }
+
+          window.location.href = "<%= my_pokemons_path %>";
+        } catch (error) {
+          console.error('Erro ao capturar:', error);
+          alert('Ocorreu um erro ao tentar capturar o Pokémon.');
+        }
+      });
+    }
+  });
+
+</script>

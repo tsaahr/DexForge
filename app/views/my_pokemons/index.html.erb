@@ -59,15 +59,16 @@
                 </div>
                 <!-- Buttons -->
                 <div class="d-flex gap-2 mt-2">
-  <% if user_pokemon.healing? %>
-    <span class="badge bg-secondary align-self-center">Healing...</span>
-  <% elsif user_pokemon.selected? %>
-    <span class="badge bg-success align-self-center">Selected</span>
-  <% else %>
-    <%= button_to "Select", select_my_pokemon_path(user_pokemon), method: :patch, class: "btn btn-sm btn-outline-light" %>
-  <% end %>
-
-  <a href="#" class="btn btn-sm btn-outline-warning">Details</a>
+                <% if user_pokemon.healing? %>
+                  <span class="badge bg-secondary align-self-center">Healing...</span>
+                <% elsif user_pokemon.selected? %>
+                  <span class="badge bg-success align-self-center">Selected</span>
+                <% else %>
+                  <%= button_to "Select", select_my_pokemon_path(user_pokemon), method: :patch, class: "btn btn-sm btn-outline-light" %>
+                <% end %>
+                
+                <%= button_to "Release", my_pokemon_path(user_pokemon), method: :delete, data: { confirm: "Are you sure you want to release this Pokémon?" }, class: "btn btn-sm btn-outline-danger" %>
+                <a href="#" class="btn btn-sm btn-outline-warning">Details</a>
                 </div>
               </div>
             </div>
