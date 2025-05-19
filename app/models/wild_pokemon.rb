@@ -1,6 +1,7 @@
 class WildPokemon < ApplicationRecord
   belongs_to :pokemon
   before_create :assign_random_ivs
+  has_many :wild_battles, dependent: :destroy
 
   def assign_random_ivs
     self.hp_iv         = rand(0..100)

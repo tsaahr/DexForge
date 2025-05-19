@@ -5,6 +5,8 @@ class WildBattle < ApplicationRecord
   has_many :battle_turns, dependent: :destroy
   has_many :battle_logs, as: :battle, dependent: :destroy
   has_many :battle_logs, as: :battleable
+  has_many :wild_battles, dependent: :destroy
+
 
 
   enum status: {

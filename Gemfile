@@ -31,6 +31,9 @@ group :development do
   gem 'letter_opener'
 end
 
+#clean
+gem 'whenever', require: false
+
 
 
 # Use Redis adapter to run Action Cable in production
