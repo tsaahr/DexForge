@@ -1,14 +1,74 @@
-<h1>Choose Your Starter Pokémon</h1>
+<h1 class="text-center my-5 display-4 fw-bold text-gradient">Choose Your Starter Pokémon</h1>
 
-<%= form_with url: starter_path, method: :post do %>
-  <div>
+<%= form_with url: starter_path, method: :post, local: true do %>
+  <div class="d-flex justify-content-center gap-4 flex-wrap">
     <% @starter_options.each do |pokemon| %>
-      <div>
-        <%= radio_button_tag :pokemon, pokemon %>
-        <%= label_tag "pokemon_#{pokemon}", pokemon.capitalize %>
-      </div>
+      <% main_type = pokemon.types.first&.name&.downcase || "normal" %>
+      <% color = type_color(main_type) %>
+
+      <label for="pokemon_<%= pokemon.name %>" class="starter-card" style="border-color: <%= color %>;">
+        <input type="radio" name="pokemon" id="pokemon_<%= pokemon.name %>" value="<%= pokemon.name %>" hidden>
+
+        <img src="<%= pokemon.image_url %>" alt="<%= pokemon.name %>" class="starter-img mb-3">
+
+        <h3 class="starter-name" style="color: <%= color %>;">
+          <%= pokemon.name.capitalize %>
+        </h3>
+      </label>
     <% end %>
   </div>
 
-  <%= submit_tag "Choose" %>
+  <div class="text-center mt-4">
+    <%= submit_tag "Choose", class: "btn btn-success btn-lg px-5" %>
+  </div>
 <% end %>
+
+<style>
+  .text-gradient {
+    background: linear-gradient(to right, #facc15, #ef4444, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .starter-card {
+    cursor: pointer;
+    border: 3px solid #ccc;
+    border-radius: 16px;
+    padding: 20px;
+    width: 180px;
+    text-align: center;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
+  }
+
+  .starter-card:hover {
+    border-color: #4caf50;
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+  }
+
+  .starter-card input[type="radio"]:checked + img {
+    transform: scale(1.15);
+    transition: transform 0.3s ease;
+    filter: drop-shadow(0 0 5px #4caf50);
+  }
+
+  .starter-card input[type="radio"]:checked + img + h3 {
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  .starter-img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    margin-bottom: 0.5rem;
+  }
+
+  .starter-name {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    font-size: 1.3rem;
+  }
+</style>

@@ -2,8 +2,10 @@ class StartersController < ApplicationController
   before_action :authenticate_user!
 
   def new
-    @starter_options = %w[charmander bulbasaur squirtle]
+    starter_names = %w[charmander bulbasaur squirtle]
+    @starter_options = Pokemon.where(name: starter_names)
   end
+  
 
   def create
     pokemon_name = params[:pokemon]
@@ -21,7 +23,7 @@ class StartersController < ApplicationController
     UserPokemon.create!(
       user: current_user,
       pokemon: pokemon,
-      level: 5,
+      level: 12,
       experience: 0
     )
 
