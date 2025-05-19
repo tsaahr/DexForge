@@ -11,8 +11,6 @@ Rails.application.routes.draw do
   get '/pokemon/:name', to: 'pokedex#show', as: 'pokemon'
   
   resources :pokedex, only: [:index, :show], param: :id
-  
-  # resource :capture, only: [:index]
   get 'capture', to: 'capture#index'
 
   get "my_pokemons", to: "my_pokemons#index"
@@ -38,6 +36,10 @@ Rails.application.routes.draw do
   get "/healing_center", to: "healing_center#index"
   post "/healing_center", to: "healing_center#create"
   post "/healing_center/:id/collect", to: "healing_center#collect", as: :collect_healing
+
+  get 'healing_sessions/:id/progress', to: 'healing_center#progress'
+
+  
 
 
   devise_for :users

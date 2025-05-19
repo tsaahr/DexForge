@@ -1,28 +1,39 @@
 <div class="container my-5">
-  <h1 class="text-center mb-4 text-gradient">Pokémon Healing Center</h1>
+  <h1 class="text-center mb-4 text-gradient display-4 fw-bold">Pokémon Healing Center</h1>
 
-  <!-- Healing in progress -->
   <h2 class="text-light mb-3"><i class="bi bi-heart-pulse-fill me-2 text-danger"></i>Healing in Progress</h2>
 
   <% if @healing_sessions.any? %>
     <div class="row g-4 mb-5">
       <% @healing_sessions.each do |session| %>
         <% pokemon = session.user_pokemon %>
-        <div class="col-md-6 col-lg-4">
-          <div class="card h-100 bg-dark bg-opacity-75 shadow-sm p-3 border-start border-3 border-warning">
-            <% main_type = pokemon.pokemon.types.first&.name&.downcase || "normal" %>
-            <% type_color = type_color(main_type) %>
-            <% display_name = (pokemon.nickname || pokemon.pokemon.name).capitalize %>
+        <% main_type = pokemon.pokemon.types.first&.name&.downcase || "normal" %>
+        <% type_color = type_color(main_type) %>
+        <% display_name = (pokemon.nickname || pokemon.pokemon.name).capitalize %>
 
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100 bg-body-tertiary text-white bg-opacity-10 shadow-sm p-4 rounded-4 border-start border-4" style="border-color: <%= type_color %>;">
             <h5 class="fw-bold mb-2" style="color: <%= type_color %>;"><%= display_name %></h5>
 
-            <p class="text-muted mb-1">Started at: <%= session.started_at.strftime("%H:%M:%S") %></p>
-            <p class="text-info mb-3">Healing progress: <strong><%= session.progress_percent %>%</strong></p>
+            <div class="mb-3">
+              <label class="form-label text-info fw-semibold">Healing Progress</label>
+              <div class="progress bg-secondary-subtle rounded-3" role="progressbar">
+                <div
+                  class="progress-bar progress-bar-striped progress-bar-animated bg-info"
+                  style="width: <%= session.progress_percent %>%"
+                  id="progress-<%= session.id %>">
+                  <%= session.progress_percent %>%
+                </div>
+              </div>
+            </div>
+            <div class="text-warning small mt-2 text-end">
+              Ready in: <span id="remaining-<%= session.id %>">--:--</span>
+            </div>          
 
             <% if session.progress_percent >= 100 %>
-              <%= button_to "Collect", collect_healing_path(session), method: :post, class: "btn btn-sm btn-success w-100" %>
+              <%= button_to "Collect", collect_healing_path(session), method: :post, class: "btn btn-success w-100 fw-semibold rounded-pill" %>
             <% else %>
-              <div class="alert alert-warning py-2 px-3 mb-0" role="alert">
+              <div class="alert alert-warning py-2 px-3 rounded-pill fw-medium text-center mb-0">
                 Healing... Come back later!
               </div>
             <% end %>
@@ -34,27 +45,26 @@
     <p class="text-muted">No Pokémon are currently healing.</p>
   <% end %>
 
-  <hr class="border-light my-4">
+  <hr class="border-light my-5">
 
-  <!-- Available to heal -->
   <h2 class="text-light mb-3"><i class="bi bi-hospital-fill me-2 text-success"></i>Available to Heal</h2>
 
   <% if @available_pokemons.any? %>
     <div class="row g-4">
       <% @available_pokemons.each do |pokemon| %>
-        <div class="col-md-6 col-lg-4">
-          <div class="card h-100 bg-dark bg-opacity-75 shadow-sm p-3 border-start border-3 border-success">
-            <% main_type = pokemon.pokemon.types.first&.name&.downcase || "normal" %>
-            <% type_color = type_color(main_type) %>
-            <% display_name = (pokemon.nickname || pokemon.pokemon.name).capitalize %>
+        <% main_type = pokemon.pokemon.types.first&.name&.downcase || "normal" %>
+        <% type_color = type_color(main_type) %>
+        <% display_name = (pokemon.nickname || pokemon.pokemon.name).capitalize %>
 
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100 bg-body-tertiary text-white bg-opacity-10 shadow-sm p-4 rounded-4 border-start border-4" style="border-color: <%= type_color %>;">
             <h5 class="fw-bold mb-2" style="color: <%= type_color %>;"><%= display_name %></h5>
 
-            <p class="text-muted mb-3">Current HP: <%= pokemon.current_hp %> / <%= pokemon.hp %></p>
+            <p class="text-light mb-3"><i class="bi bi-heart-fill me-1 text-danger"></i><strong>Current HP:</strong> <%= pokemon.current_hp %> / <%= pokemon.hp %></p>
 
             <%= form_with url: healing_center_path, method: :post, local: true do %>
               <%= hidden_field_tag :user_pokemon_id, pokemon.id %>
-              <%= submit_tag "Send to Heal", class: "btn btn-sm btn-outline-light w-100" %>
+              <%= submit_tag "Send to Heal", class: "btn btn-outline-light w-100 fw-semibold rounded-pill" %>
             <% end %>
           </div>
         </div>
@@ -73,11 +83,67 @@
   }
 
   .card {
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    background-color: rgba(33, 37, 41, 0.8); /* melhor visibilidade */
+    color: #f8f9fa;
   }
 
   .card:hover {
     transform: scale(1.03);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.08);
+  }
+
+  .rounded-4 {
+    border-radius: 1.25rem !important;
+  }
+
+  .btn {
+    transition: transform 0.2s ease;
+  }
+
+  .btn:hover {
+    transform: scale(1.05);
+  }
+
+  .alert {
+    font-size: 0.95rem;
   }
 </style>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const updateIntervals = [];
+
+    document.querySelectorAll("[id^='progress-']").forEach((bar) => {
+      const sessionId = bar.id.replace("progress-", "");
+      const remainingDisplay = document.getElementById(`remaining-${sessionId}`);
+
+      const interval = setInterval(() => {
+        fetch(`/healing_sessions/${sessionId}/progress`)
+          .then(res => res.json())
+          .then(data => {
+            console.log("Healing data:", data);
+            const percent = data.percent;
+            const seconds = data.remaining_seconds;
+
+            bar.style.width = percent + "%";
+            bar.textContent = percent + "%";
+
+            if (remainingDisplay && seconds >= 0) {
+              const mins = Math.floor(seconds / 60);
+              const secs = seconds % 60;
+              remainingDisplay.textContent = `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+            }
+
+            if (percent >= 100) {
+              clearInterval(interval);
+              location.reload();
+            }
+          });
+      }, 1000);
+
+      updateIntervals.push(interval);
+    });
+  });
+</script>
