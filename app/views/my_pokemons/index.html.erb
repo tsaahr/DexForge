@@ -28,46 +28,46 @@
                     <% end %>
                   </h5>
 
-<p class="mb-2" style="color: #f8f9fa; font-weight: 500;">
-  <i class="bi bi-bookmark-star-fill me-1"></i>
-  Type:
-</p>
-<div class="d-flex gap-1 mb-3">
-  <% pokemon.types.each do |type| %>
-    <% type_color_value = type_color(type.name.downcase) %>
-    <span class="badge px-2 py-1" style="background-color: <%= type_color_value %>; font-weight: 500;">
-      <%= type.name.capitalize %>
-    </span>
-  <% end %>
-</div>
+                  <p class="mb-2" style="color: #f8f9fa; font-weight: 500;">
+                    <i class="bi bi-bookmark-star-fill me-1"></i>
+                    Type:
+                  </p>
+                  <div class="d-flex gap-1 mb-3">
+                    <% pokemon.types.each do |type| %>
+                      <% type_color_value = type_color(type.name.downcase) %>
+                      <span class="badge px-2 py-1" style="background-color: <%= type_color_value %>; font-weight: 500;">
+                        <%= type.name.capitalize %>
+                      </span>
+                    <% end %>
+                  </div>
 
-<% if user_pokemon.moves.present? %>
-  <p class="mb-2" style="color: #f8f9fa; font-weight: 500;">
-    <i class="bi bi-lightning-fill me-1"></i>
-    Moves:
-  </p>
-  <div class="d-grid gap-1 mb-2">
-    <% user_pokemon.moves.first(4).each do |move| %>
-      <% move_type = move["move_type"]&.downcase || "normal" %>
-      <% move_color = type_color(move_type) %>
-      <span class="badge text-start px-2 py-2" style="background-color: <%= move_color %>; color: #000; font-weight: 500; width: 100%;">
-        <%= move["name"].humanize %>
-      </span>
-    <% end %>
-  </div>
-<% end %>
-
+                  <% if user_pokemon.moves.present? %>
+                    <p class="mb-2" style="color: #f8f9fa; font-weight: 500;">
+                      <i class="bi bi-lightning-fill me-1"></i>
+                      Moves:
+                    </p>
+                    <div class="d-grid gap-1 mb-2">
+                      <% user_pokemon.moves.first(4).each do |move| %>
+                        <% move_type = move["move_type"]&.downcase || "normal" %>
+                        <% move_color = type_color(move_type) %>
+                        <span class="badge text-start px-2 py-2" style="background-color: <%= move_color %>; color: #000; font-weight: 500; width: 100%;">
+                          <%= move["name"].humanize %>
+                        </span>
+                      <% end %>
+                    </div>
+                  <% end %>
                 </div>
-
                 <!-- Buttons -->
                 <div class="d-flex gap-2 mt-2">
-                  <% if user_pokemon.selected? %>
-                    <span class="badge bg-success align-self-center">Selected</span>
-                  <% else %>
-                    <%= button_to "Select", select_my_pokemon_path(user_pokemon), method: :patch, class: "btn btn-sm btn-outline-light" %>
-                  <% end %>
+  <% if user_pokemon.healing? %>
+    <span class="badge bg-secondary align-self-center">Healing...</span>
+  <% elsif user_pokemon.selected? %>
+    <span class="badge bg-success align-self-center">Selected</span>
+  <% else %>
+    <%= button_to "Select", select_my_pokemon_path(user_pokemon), method: :patch, class: "btn btn-sm btn-outline-light" %>
+  <% end %>
 
-                  <a href="#" class="btn btn-sm btn-outline-warning">Details</a>
+  <a href="#" class="btn btn-sm btn-outline-warning">Details</a>
                 </div>
               </div>
             </div>

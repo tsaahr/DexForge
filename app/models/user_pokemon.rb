@@ -4,6 +4,7 @@ class UserPokemon < ApplicationRecord
   belongs_to :wild_pokemon, optional: true
   has_many :pokemon_status_effects, dependent: :destroy
   has_many :status_effects, through: :pokemon_status_effects
+  has_one :healing_session, dependent: :destroy
 
 
   validates :level, presence: true, numericality: { greater_than: 0 }
@@ -19,6 +20,14 @@ class UserPokemon < ApplicationRecord
 
   def name_or_nickname
     nickname.present? ? nickname : pokemon.name
+  end
+
+  def healing?
+    healing_session.present?
+  end
+
+  def available_for_battle?
+    !healing?
   end
 
   def assign_random_ivs

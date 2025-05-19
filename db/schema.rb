@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_18_152522) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_19_005513) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,6 +53,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_18_152522) do
     t.jsonb "stat_stages", default: {}
     t.index ["user_pokemon_1_id"], name: "index_battles_on_user_pokemon_1_id"
     t.index ["user_pokemon_2_id"], name: "index_battles_on_user_pokemon_2_id"
+  end
+
+  create_table "healing_sessions", force: :cascade do |t|
+    t.bigint "user_pokemon_id", null: false
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_pokemon_id"], name: "index_healing_sessions_on_user_pokemon_id"
   end
 
   create_table "move_status_effects", force: :cascade do |t|
@@ -255,6 +264,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_18_152522) do
   add_foreign_key "battle_turns", "wild_battles"
   add_foreign_key "battles", "user_pokemons", column: "user_pokemon_1_id"
   add_foreign_key "battles", "user_pokemons", column: "user_pokemon_2_id"
+  add_foreign_key "healing_sessions", "user_pokemons"
   add_foreign_key "move_status_effects", "moves"
   add_foreign_key "move_status_effects", "status_effects"
   add_foreign_key "moves", "types"

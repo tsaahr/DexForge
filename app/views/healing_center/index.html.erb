@@ -1,0 +1,83 @@
+<div class="container my-5">
+  <h1 class="text-center mb-4 text-gradient">Pokémon Healing Center</h1>
+
+  <!-- Healing in progress -->
+  <h2 class="text-light mb-3"><i class="bi bi-heart-pulse-fill me-2 text-danger"></i>Healing in Progress</h2>
+
+  <% if @healing_sessions.any? %>
+    <div class="row g-4 mb-5">
+      <% @healing_sessions.each do |session| %>
+        <% pokemon = session.user_pokemon %>
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100 bg-dark bg-opacity-75 shadow-sm p-3 border-start border-3 border-warning">
+            <% main_type = pokemon.pokemon.types.first&.name&.downcase || "normal" %>
+            <% type_color = type_color(main_type) %>
+            <% display_name = (pokemon.nickname || pokemon.pokemon.name).capitalize %>
+
+            <h5 class="fw-bold mb-2" style="color: <%= type_color %>;"><%= display_name %></h5>
+
+            <p class="text-muted mb-1">Started at: <%= session.started_at.strftime("%H:%M:%S") %></p>
+            <p class="text-info mb-3">Healing progress: <strong><%= session.progress_percent %>%</strong></p>
+
+            <% if session.progress_percent >= 100 %>
+              <%= button_to "Collect", collect_healing_path(session), method: :post, class: "btn btn-sm btn-success w-100" %>
+            <% else %>
+              <div class="alert alert-warning py-2 px-3 mb-0" role="alert">
+                Healing... Come back later!
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-muted">No Pokémon are currently healing.</p>
+  <% end %>
+
+  <hr class="border-light my-4">
+
+  <!-- Available to heal -->
+  <h2 class="text-light mb-3"><i class="bi bi-hospital-fill me-2 text-success"></i>Available to Heal</h2>
+
+  <% if @available_pokemons.any? %>
+    <div class="row g-4">
+      <% @available_pokemons.each do |pokemon| %>
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100 bg-dark bg-opacity-75 shadow-sm p-3 border-start border-3 border-success">
+            <% main_type = pokemon.pokemon.types.first&.name&.downcase || "normal" %>
+            <% type_color = type_color(main_type) %>
+            <% display_name = (pokemon.nickname || pokemon.pokemon.name).capitalize %>
+
+            <h5 class="fw-bold mb-2" style="color: <%= type_color %>;"><%= display_name %></h5>
+
+            <p class="text-muted mb-3">Current HP: <%= pokemon.current_hp %> / <%= pokemon.hp %></p>
+
+            <%= form_with url: healing_center_path, method: :post, local: true do %>
+              <%= hidden_field_tag :user_pokemon_id, pokemon.id %>
+              <%= submit_tag "Send to Heal", class: "btn btn-sm btn-outline-light w-100" %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-muted">No available Pokémon to heal.</p>
+  <% end %>
+</div>
+
+<style>
+  .text-gradient {
+    background: linear-gradient(to right, #facc15, #ef4444, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .card {
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+</style>

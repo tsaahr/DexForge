@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_pokemon: one
+  started_at: 2025-05-18 21:55:13
+  finished_at: 2025-05-18 21:55:13
+
+two:
+  user_pokemon: two
+  started_at: 2025-05-18 21:55:13
+  finished_at: 2025-05-18 21:55:13
