@@ -1,5 +1,10 @@
 <div class="container my-5">
-  <h1 class="mb-5 text-center display-4 fw-bold text-gradient">My Pokémons</h1>
+    <div class="mypokemon-header-card text-center p-4 mb-5 shadow-lg">
+      <h1 class="mypokemon-title mb-0">
+        <i class="bi bi-hospital-fill me-2"></i>
+        My Pokemons
+      </h1>
+    </div>
 
   <% if @user_pokemons.present? %>
     <div class="row g-4">
@@ -62,7 +67,7 @@
                     </div>
                   <% end %>
                 </div>
-                <!-- Buttons -->
+                
                 <div class="d-flex gap-2 mt-2">
                 <% if user_pokemon.healing? %>
                   <span class="badge bg-secondary align-self-center">Healing...</span>
@@ -130,5 +135,24 @@
   color: #dc2626;
   cursor: pointer;
   }
+
+.mypokemon-header-card {
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  }
+
+.mypokemon-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #22d3ee, #6366f1, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.08);
+  letter-spacing: 1px; 
+  }
+
 
 </style>

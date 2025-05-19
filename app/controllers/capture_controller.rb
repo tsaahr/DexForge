@@ -102,6 +102,14 @@ class CaptureController < ApplicationController
     @all_moves = @wild_pokemon.all_possible_moves
   end
   def battle
+    @user_pokemon = current_user.user_pokemons.find_by(selected: true)
+
+    unless @user_pokemon
+      redirect_back fallback_location: capture_encounter_path, alert: "You need to select a Pokémon before battling."
+      return
+    end
+  
+    @wild_pokemon = WildPokemon.find(params[:id])
     @wild_pokemon = WildPokemon.find(params[:id])
     @user_pokemon = current_user.user_pokemons.find_by(selected: true)
   

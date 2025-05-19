@@ -39,6 +39,22 @@
       .btn-light.text-danger:hover {
         background-color: #fff0f0;
       }
+
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      main {
+        flex-grow: 1;
+      }
+
     </style>
   </head>
 
@@ -63,7 +79,7 @@
       </div>
     </header>
 
-    <main class="container mb-5">
+    <main class="container mb-5" style="flex-grow:1;">
       <%= yield %>
     </main>
 
