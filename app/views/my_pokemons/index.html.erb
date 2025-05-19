@@ -21,11 +21,16 @@
               <!-- RIGHT -->
               <div class="col-8 d-flex flex-column justify-content-between">
                 <div>
-                  <h5 class="card-title fw-bold mb-2" style="color: <%= color %>;">
-                    <%= pokemon.name.capitalize %>
-                    <% if user_pokemon.nickname.present? %>
-                      <small class="text-muted">(<%= user_pokemon.nickname %>)</small>
-                    <% end %>
+                  <h5 class="card-title fw-bold mb-2 d-flex justify-content-between align-items-start" style="color: <%= color %>;">
+                    <span>
+                      <%= pokemon.name.capitalize %>
+                      <% if user_pokemon.nickname.present? %>
+                        <small class="text-muted">(<%= user_pokemon.nickname %>)</small>
+                      <% end %>
+                    </span>
+                    <%= button_to "×", my_pokemon_path(user_pokemon), method: :delete,
+                        data: { confirm: "Are you sure you want to release this Pokémon?" },
+                        class: "release-btn" %>
                   </h5>
 
                   <p class="mb-2" style="color: #f8f9fa; font-weight: 500;">
@@ -67,7 +72,6 @@
                   <%= button_to "Select", select_my_pokemon_path(user_pokemon), method: :patch, class: "btn btn-sm btn-outline-light" %>
                 <% end %>
                 
-                <%= button_to "Release", my_pokemon_path(user_pokemon), method: :delete, data: { confirm: "Are you sure you want to release this Pokémon?" }, class: "btn btn-sm btn-outline-danger" %>
                 <a href="#" class="btn btn-sm btn-outline-warning">Details</a>
                 </div>
               </div>
@@ -109,4 +113,22 @@
   .card-body {
     padding: 0 !important;
   }
+
+  .release-btn {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ef4444;
+  background: transparent;
+  border: none;
+  padding: 0;
+  line-height: 1;
+  transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+.release-btn:hover {
+  transform: scale(1.7);
+  color: #dc2626;
+  cursor: pointer;
+  }
+
 </style>
